@@ -21,7 +21,7 @@ CREATE TABLE users (
     birthday DATE
 );
 
-CREATE TABLE Posts (
+CREATE TABLE posts (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     title VARCHAR(255),
@@ -37,7 +37,7 @@ CREATE TABLE Posts (
     FOREIGN KEY (user_id) REFERENCES Users(id)
 );
 
-CREATE TABLE Comments (
+CREATE TABLE comments (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     post_id INT NOT NULL,
@@ -53,7 +53,7 @@ CREATE TABLE Comments (
     FOREIGN KEY (answer_of) REFERENCES Comments(id) ON DELETE CASCADE
 );
 
-CREATE TABLE Followers (
+CREATE TABLE followers (
     follower_id INT NOT NULL,
     followed_id INT NOT NULL,
     PRIMARY KEY (follower_id, followed_id),
