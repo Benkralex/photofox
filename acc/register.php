@@ -13,11 +13,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'];
 
     // Prepare and execute the SQL statement
-    $sql = "INSERT INTO users (email, name, username, password) VALUES (
+    $sql = "INSERT INTO users (email, name, username, password, permission_level) VALUES (
         '".$email."',
         '".$name."',
         '".$username."',
-        '".$password."'
+        '".$password."',
+        2
     );";
     $result = $conn->query($sql);
     
