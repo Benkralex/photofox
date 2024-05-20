@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (session_status() != 2 && $_SESSION['permission_level'] > 0) {
+if (session_status() != 2 && $_SESSION['permission_level'] > 5) {
   header("Location: ./acc/login.html");
   exit();
 }
