@@ -1,3 +1,10 @@
+<?php
+session_start();
+if (session_status() != 2 && $_SESSION['permission_level'] > 0) {
+  header("Location: ./acc/login.html");
+  exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -44,7 +51,9 @@
       <li class="nav-item <?php if ($currentPage === 'index') {echo 'active';} ?>">
         <a class="nav-link" href="./">Startseite</a>
       </li>
-      <li class="nav-item dropdown <?php if ($currentPage === 'user') {echo 'active';} ?>">
+      <?php
+      if ($_SESSION['permission_level'] > 7) {echo '
+      <li class="nav-item dropdown ' . ($currentPage === 'user' ? 'active' : '') . '">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownUser" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Benutzer</a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownUser">
           <a class="dropdown-item" href="./user.php?act=overview">Übersicht</a>
@@ -52,8 +61,9 @@
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="./user.php?act=security">Sicherheit</a>
         </div>
-      </li>
-      <li class="nav-item dropdown <?php if ($currentPage === 'posts') {echo 'active';} ?>">
+      </li>';}
+      if ($_SESSION['permission_level'] > 5) {echo '
+      <li class="nav-item dropdown ' . ($currentPage === 'posts' ? 'active' : '') . '">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownPosts" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Posts</a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownPosts">
           <a class="dropdown-item" href="./posts.php?act=overview">Übersicht</a>
@@ -61,7 +71,11 @@
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="./posts.php?act=security">Sicherheit</a>
         </div>
-      </li>
+      </li>';}
+      ?>
+      <li class="nav-item">
+            <a class="nav-link" href="../">Photofox Startseite</a>
+        </li>
     </ul>
     <!-- <form class="form-inline my-2 my-lg-0">
       <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">

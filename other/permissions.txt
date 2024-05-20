@@ -1,0 +1,20 @@
+Man hat alle Berechtigungen (außer 0), die unter den Level oder genau auf dem Level liegen:
+Mit Rang 4 kann man also posten (mit G.), kommentieren, liken, Posts melden und Posts anschauen.
+0-3 Normal
+4-5 Creator
+6-7 Support
+8-9 Nutzer Support
+10 Admin
+
+
+0 Nichts
+1 Posts sehen und melden
+2 Posts liken
+3 Posts kommentieren
+4 Posts mit Genehmigung posten
+5 ^ohne Genehmigung
+6 Posts freigeben
+7 Posts löschen
+8 Nutzer freigeben
+9 Ränge 0-8 verteilen
+10 Rang 9 verteilen

@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (session_status() != 2) {
+if (session_status() != 2 && $_SESSION['permission_level'] > 0) {
   header("Location: ./acc/login.html");
   exit();
 }
@@ -60,7 +60,7 @@ if (session_status() != 2) {
         <a class="nav-link" href="./user_overview.php">Nutzer</a>
     </li>
     <?php
-     if ($_SESSION['permission_level'] > 1) {echo '
+     if ($_SESSION['permission_level'] > 3) {echo '
         <li class="nav-item dropdown ' . ($currentPage === 'my_posts' ? 'active' : '') . '">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMyPosts" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Meine Posts</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownMyPosts">
@@ -78,7 +78,13 @@ if (session_status() != 2) {
         <li class="nav-item ' . ($currentPage === 'my_posts' ? 'active' : '') . '">
             <a class="nav-link" href="./my_posts.php?act=own">Markierte Posts</a>
         </li>';
-      }?>
+      }
+      if ($_SESSION['permission_level'] > 5) {echo '
+        <li class="nav-item">
+            <a class="nav-link" href="./admin">Admin-Konsole</a>
+        </li>';
+    }
+      ?>
     </ul>
     <!-- <form class="form-inline my-2 my-lg-0">
       <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
