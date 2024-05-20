@@ -1,6 +1,6 @@
 
 <?php
-require('database.php');
+require('../database.php');
 // Start the session to store user information if needed
 session_start();
 

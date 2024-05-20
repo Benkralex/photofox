@@ -1,6 +1,6 @@
 
 <?php
-require('database.php');
+require('../database.php');
 // Start the session to store user information if needed
 session_start();
 
@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-    /* header("Location: ./login.html");
-    exit(); */
+    header("Location: ./login.html");
+    exit();
 }
 ?>
