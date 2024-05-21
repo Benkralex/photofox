@@ -18,6 +18,7 @@ function updateUserDetail($conn, $username, $field, $newValue) {
         $stmt->execute();
 
         $stmt->close();
+        $_SESSION[$field] = $newValue;
     }
 }
 updateUserDetail($conn, $_SESSION['username'], $_GET['field'], $_GET['value']);
