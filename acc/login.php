@@ -21,10 +21,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($password == $user['password']) {
                 // Store user information in session or perform other login actions
                 $_SESSION['user_id'] = $user['id'];
-                $_SESSION['username'] = $user['username'];
                 $_SESSION['email'] = $user['email'];
                 $_SESSION['name'] = $user['name'];
+                $_SESSION['username'] = $user['username'];
                 $_SESSION['permission_level'] = $user['permission_level'];
+                $_SESSION['profil_pic'] = $user['profile_pic'];
+                $_SESSION['member_since'] = $user['member_since'];
+                $_SESSION['warnings'] = $user['warnings'];
+                $_SESSION['primary_color'] = $user['primary_color'];
+                $_SESSION['biography'] = $user['biography'];
+                $_SESSION['birthday'] = $user['birthday'];
                 header("Location: ../");
                 exit();
             }

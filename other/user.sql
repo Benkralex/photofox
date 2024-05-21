@@ -33,6 +33,7 @@ CREATE TABLE posts (
     reported BOOLEAN DEFAULT FALSE,
     tags JSON,
     posted_at DATETIME NOT NULL,
+    comments_active BOOLEAN DEFAULT TRUE,
     type ENUM('video', 'image') NOT NULL,
     FOREIGN KEY (user_id) REFERENCES Users(id)
 );
@@ -62,7 +63,6 @@ CREATE TABLE followers (
 );
 
 
--- Insert a sample user (username: admin, password: password123 hashed with bcrypt)
 INSERT INTO users (email, name, username, password, permission_level, member_since) VALUES (
     'admin@example.com',
     'Admin User',
@@ -70,4 +70,17 @@ INSERT INTO users (email, name, username, password, permission_level, member_sin
     '$2y$10$e0MYzXyjpJS2Hd/ZKiT/bOQEE5.YSU1aGB/XRCq1UtQF7vAB1D1sy',
     32,
     now()
-); 
+);
+
+INSERT INTO users (email, name, username, password, permission_level, member_since, biography, birthday, primary_color, profile_pic) VALUES (
+    'Email',
+    'Name',
+    'User',
+    'Pass',
+    permission_level,
+    NOW(),
+    'Biography',
+    'Birthday YYYY-MM-DD',
+    'Hex-Color: #000000',
+    '_______.png'
+);
