@@ -13,16 +13,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'];
 
     // Prepare and execute the SQL statement
-    $sql = "INSERT INTO users (email, name, username, password, permission_level, member_since) VALUES (
+    $sql = "INSERT INTO users (email, name, username, password, permission_level) VALUES (
         '".$email."',
         '".$name."',
         '".$username."',
         '".$password."',
-        0,
-        now()
+        0
     );";
     $result = $conn->query($sql);
-    
+
     $sql = "SELECT * FROM users WHERE username = '".$username."';";
     $result = $conn->query($sql);
 

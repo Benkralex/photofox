@@ -1,8 +1,8 @@
 <?php
 $servername = "localhost";
 $dbname = "photofox";
-$dbusername = "photofox";
-$dbpassword = "Ben.10.e";
+$dbusername = "photofoxDBuser";
+$dbpassword = "#!2024passw0rdDB";
 
 $conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
 
