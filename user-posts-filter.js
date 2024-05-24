@@ -1,5 +1,5 @@
 document.getElementById("showImages").addEventListener("click", function () {
-  toggleVisibility("img");
+  toggleVisibility("image");
 });
 
 document.getElementById("showVideos").addEventListener("click", function () {

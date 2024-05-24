@@ -68,12 +68,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $src = $video;
     }
 
-    // Bind parameters
     $stmt->bind_param("isssss", $user_id, $title, $description, $src, $type, $tags);
 
-    // Execute statement
     if ($stmt->execute()) {
-        echo "Post created successfully!";
+        $sql_update = "UPDATE users SET posts_quantity = posts_quantity + 1 WHERE id = ?";
+        
+        $stmt_update = $conn->prepare($sql_update);
+        if($stmt_update === false) {
+            die("Error while preparing the statement: " . $conn->error);
+        }
+
+        $stmt_update->bind_param("i", $user_id);
+
+        if ($stmt_update->execute()) {
+            echo "Post created successfully!";
+        } else {
+            echo "Error updating user's post quantity: " . $conn->error;
+        }
+
+        $stmt_update->close();
     } else {
         echo "Error: " . $sql . "<br>" . $conn->error;
     }
