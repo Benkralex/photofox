@@ -1,4 +1,4 @@
-**README.txt**
+**Photofox by Benkralex**
 
 ---
 
@@ -128,5 +128,132 @@ Un utilisateur peut effectuer des actions correspondant à son niveau de permiss
 
 - **9 :** Distribuer des permissions de niveau 0 à 8
 - **10 :** Assigner le niveau de permission 9
+
+---
+
+### Configuración de la base de datos
+
+**Español:**
+
+1. Cambie la ruta en el archivo `configs/config.php` al directorio en el que ha instalado este proyecto.
+2. Ajuste las credenciales de acceso en el archivo `configs/db.json` y elija una contraseña segura.
+3. Actualice en el archivo `configs/server.json` las credenciales de administrador necesarias para activar usuarios con códigos de un solo uso. Elija también una contraseña segura aquí.
+4. Establezca los permisos para los nuevos usuarios en el archivo `configs/acc.json`. Recomendamos una escala de permisos de 0 a 5.
+5. Ejecute el archivo `configs/updateSQL.php`.
+6. Abra la consola del servidor de la base de datos y ejecute el archivo `configs/photofoxDB.sql`.
+
+### Permisos
+
+Un usuario puede realizar acciones que corresponden a su nivel de permiso o a un nivel inferior.
+
+**Usuario normal:**
+
+- **0:** Sin permisos
+- **1:** Ver y reportar publicaciones
+- **2:** Dar "me gusta" a publicaciones
+- **3:** Comentar publicaciones
+
+**Creador:**
+
+- **4:** Publicar con aprobación
+- **5:** Publicar sin aprobación
+
+**Soporte:**
+
+- **6:** Aprobar publicaciones
+- **7:** Borrar publicaciones
+
+**Soporte de usuarios:**
+
+- **8:** Aprobar usuarios
+
+**Administrador:**
+
+- **9:** Distribuir permisos del nivel 0 al 8
+- **10:** Asignar nivel de permiso 9
+
+---
+
+### Configurazione del database
+
+**Italiano:**
+
+1. Modifica il percorso nel file `configs/config.php` alla directory in cui hai installato questo progetto.
+2. Regola le credenziali di accesso nel file `configs/db.json` e scegli una password sicura.
+3. Aggiorna nel file `configs/server.json` le credenziali di amministratore necessarie per attivare gli utenti con codici monouso. Scegli anche qui una password sicura.
+4. Imposta i permessi per i nuovi utenti nel file `configs/acc.json`. Raccomandiamo una scala di permessi da 0 a 5.
+5. Esegui il file `configs/updateSQL.php`.
+6. Apri la console del server del database ed esegui il file `configs/photofoxDB.sql`.
+
+### Permessi
+
+Un utente può compiere azioni che corrispondono al suo livello di permesso o inferiore.
+
+**Utente normale:**
+
+- **0:** Nessun permesso
+- **1:** Visualizzare e segnalare pubblicazioni
+- **2:** Mettere "mi piace" alle pubblicazioni
+- **3:** Commentare pubblicazioni
+
+**Creatore:**
+
+- **4:** Pubblicare con approvazione
+- **5:** Pubblicare senza approvazione
+
+**Supporto:**
+
+- **6:** Approvare pubblicazioni
+- **7:** Eliminare pubblicazioni
+
+**Supporto utenti:**
+
+- **8:** Approvare utenti
+
+**Amministratore:**
+
+- **9:** Distribuire permessi dal livello 0 all'8
+- **10:** Assegnare livello di permesso 9
+
+---
+
+**Português:**
+
+1. Altere o caminho no arquivo `configs/config.php` para o diretório onde você instalou este projeto.
+2. Ajuste as credenciais de acesso no arquivo `configs/db.json` e escolha uma senha segura.
+3. Atualize no arquivo `configs/server.json` as credenciais de administrador necessárias para ativar usuários com códigos de uso único. Escolha também uma senha segura aqui.
+4. Defina as permissões para novos usuários no arquivo `configs/acc.json`. Recomendamos uma escala de permissões de 0 a 5.
+5. Execute o arquivo `configs/updateSQL.php`.
+6. Abra o console do servidor de banco de dados e execute o arquivo `configs/photofoxDB.sql`.
+
+### Permissões
+
+Um usuário pode realizar ações que correspondem ao seu nível de permissão ou inferior.
+
+**Usuário normal:**
+
+- **0:** Sem permissões
+- **1:** Visualizar e relatar postagens
+- **2:** Curtir postagens
+- **3:** Comentar em postagens
+
+**Criador:**
+
+- **4:** Publicar com aprovação
+- **5:** Publicar sem aprovação
+
+**Suporte:**
+
+- **6:** Aprovar postagens
+- **7:** Excluir postagens
+
+**Suporte de usuários:**
+
+- **8:** Aprovar usuários
+
+**Administrador:**
+
+- **9:** Distribuir permissões do nível 0 ao 8
+- **10:** Atribuir nível de permissão 9
 
 ---
