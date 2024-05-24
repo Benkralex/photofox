@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS posts (
     src VARCHAR(255),
     views INT DEFAULT 0,
     likes INT DEFAULT 0,
-    allowed BOOLEAN DEFAULT TRUE,
+    allowed BOOLEAN,
     reported BOOLEAN DEFAULT FALSE,
     tags JSON,
     posted_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,

@@ -4,16 +4,18 @@ $currentPage = '';
 require_once('nav.php');
 require('./database.php');
 
-// SQL-Abfrage für Benutzerdaten
+if ($_SERVER["REQUEST_METHOD"] != "GET" || !isset($_GET['user'])) {
+  header("Location: ./user_overview.php");
+  exit();
+}
+
 $user = $_GET['user'];
 $query = "SELECT * FROM users WHERE username = '$user'";
 $result = $conn->query($query);
 
-// Überprüfen, ob ein Benutzer gefunden wurde
 if ($result->num_rows > 0) {
-    $userData = $result->fetch_assoc(); // Benutzerdaten abrufen
+    $userData = $result->fetch_assoc();
 
-    // Profilbild überprüfen
     $profilePic = !empty($userData['profile_pic']) ? $userData['profile_pic'] : './img/noProfilePic.png';
 ?>
 
@@ -35,7 +37,7 @@ if ($result->num_rows > 0) {
         <?php
         // SQL-Abfrage für Beiträge des Benutzers
         $userId = $userData['id'];
-        $postQuery = "SELECT * FROM posts WHERE user_id = '$userId'";
+        $postQuery = "SELECT * FROM posts WHERE user_id = '$userId' AND allowed = 1";
         $postResult = $conn->query($postQuery);
 
         // Überprüfen, ob Beiträge gefunden wurden
@@ -65,5 +67,7 @@ if ($result->num_rows > 0) {
 <?php
 } else {
     echo "Benutzer nicht gefunden.";
+    /* header("Location: ./user_overview.php");
+    exit(); */
 }
 ?>

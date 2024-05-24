@@ -27,6 +27,8 @@ $user_id = $_SESSION['user_id'];
             $remaining_time = 3600 - $time_diff;
             $time_message = gmdate("i", $remaining_time);
             die("Du kannst erst in ".$time_message."min wieder posten");
+        } elseif ($_SESSION['permission_level'] < 4) {
+            die("Du hast keine Berechtigung, Posts hochzuladen");
         }
     }
 
@@ -49,7 +51,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // SQL-Abfrage zum Einfügen des Beitrags in die Datenbank
-    $sql = "INSERT INTO posts (user_id, title, description, src, type, tags) VALUES (?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO posts (user_id, title, description, src, type, tags, allowed) VALUES (?, ?, ?, ?, ?, ?, ?)";
     
     // Prepare statement
     $stmt = $conn->prepare($sql);
@@ -59,6 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Set parameters
     $type = "";
+    $allowed = ($_SESSION['permission_level'] > 4);
     $tags = json_encode($escaped_tags);
     if (!empty($image)) {
         $type = "image";
@@ -68,7 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $src = $video;
     }
 
-    $stmt->bind_param("isssss", $user_id, $title, $description, $src, $type, $tags);
+    $stmt->bind_param("isssssi", $user_id, $title, $description, $src, $type, $tags, $allowed);
 
     if ($stmt->execute()) {
         $sql_update = "UPDATE users SET posts_quantity = posts_quantity + 1 WHERE id = ?";
@@ -94,8 +97,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Schließen der Anweisung und Verbindung
     $stmt->close();
     $conn->close();
-}
-?>
+} else { echo'
 <body>
     <h2>Create a New Post</h2>
     <form action="new_post.php" method="POST" enctype="multipart/form-data">
@@ -112,3 +114,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <input type="submit" value="Create Post">
     </form>
 </body>
+';
+}
+?>
