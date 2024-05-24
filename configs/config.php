@@ -1,7 +1,10 @@
 <?php
-//server
+//Path, were the project is intalled
 define('MAIN_LOC', 'C:/xampp/htdocs/photofox');
 
+
+
+//Don't change
 function getConfig($configFile) {
     if (!file_exists($configFile)) {
         die("Konfigurationsdatei nicht gefunden!");
