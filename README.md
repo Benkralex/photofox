@@ -6,12 +6,11 @@
 
 **Deutsch:**
 
-1. Ändern Sie den Pfad in der Datei `configs/config.php` auf den Pfad, in dem Sie dieses Projekt installiert haben.
-2. Passen Sie die Zugangsdaten in der Datei `configs/db.json` an und wählen Sie ein sicheres Passwort.
-3. Aktualisieren Sie in der Datei `configs/server.json` die Admin-Zugangsdaten, die für das Aktivieren der Nutzer mit Einmalcodes benötigt werden. Auch hier sollten Sie ein sicheres Passwort wählen.
-4. Legen Sie die Berechtigungen für neue Nutzer in der Datei `configs/acc.json` fest. Wir empfehlen eine Berechtigungsskala von 0-5.
-5. Führen Sie die Datei `configs/updateSQL.php` aus.
-6. Öffnen Sie die Konsole des Datenbank-Servers und führen Sie die Datei `configs/photofoxDB.sql` aus.
+1. Passen Sie die Zugangsdaten in der Datei `configs/db.json` an und wählen Sie ein sicheres Passwort.
+2. Aktualisieren Sie in der Datei `configs/server.json` die Admin-Zugangsdaten, die für das Aktivieren der Nutzer mit Einmalcodes benötigt werden. Auch hier sollten Sie ein sicheres Passwort wählen.
+3. Legen Sie die Berechtigungen für neue Nutzer in der Datei `configs/acc.json` fest. Wir empfehlen eine Berechtigungsskala von 0-5.
+4. Führen Sie die Datei `configs/updateSQL.php` aus.
+5. Öffnen Sie die Konsole des Datenbank-Servers und führen Sie die Datei `configs/photofoxDB.sql` aus.
 
 ### Permissions
 
@@ -49,12 +48,11 @@ Ein Benutzer kann Aktionen durchführen, die seinem Berechtigungslevel oder eine
 
 **English:**
 
-1. Modify the path in the `configs/config.php` file to the path where you have installed this project.
-2. Adjust the access credentials in the `configs/db.json` file and choose a secure password.
-3. Update the admin access credentials in the `configs/server.json` file, which are required for activating users with one-time codes. Again, choose a secure password here.
-4. Set the permissions for new users in the `configs/acc.json` file. We recommend a permission scale of 0-5.
-5. Execute the `configs/updateSQL.php` file.
-6. Open the console of the database server and execute the `configs/photofoxDB.sql` file.
+1. Adjust the access credentials in the `configs/db.json` file and choose a secure password.
+2. Update the admin access credentials in the `configs/server.json` file, which are required for activating users with one-time codes. Again, choose a secure password here.
+3. Set the permissions for new users in the `configs/acc.json` file. We recommend a permission scale of 0-5.
+4. Execute the `configs/updateSQL.php` file.
+5. Open the console of the database server and execute the `configs/photofoxDB.sql` file.
 
 ### Permissions
 
@@ -92,12 +90,11 @@ A user can perform actions corresponding to their permission level or lower.
 
 **Français:**
 
-1. Modifiez le chemin dans le fichier `configs/config.php` vers le chemin où vous avez installé ce projet.
-2. Ajustez les identifiants d'accès dans le fichier `configs/db.json` et choisissez un mot de passe sécurisé.
-3. Mettez à jour les identifiants d'accès admin dans le fichier `configs/server.json`, nécessaires pour activer les utilisateurs avec des codes à usage unique. Encore une fois, choisissez un mot de passe sécurisé ici.
-4. Définissez les permissions pour les nouveaux utilisateurs dans le fichier `configs/acc.json`. Nous recommandons une échelle de permissions de 0 à 5.
-5. Exécutez le fichier `configs/updateSQL.php`.
-6. Ouvrez la console du serveur de base de données et exécutez le fichier `configs/photofoxDB.sql`.
+1. Ajustez les identifiants d'accès dans le fichier `configs/db.json` et choisissez un mot de passe sécurisé.
+2. Mettez à jour les identifiants d'accès admin dans le fichier `configs/server.json`, nécessaires pour activer les utilisateurs avec des codes à usage unique. Encore une fois, choisissez un mot de passe sécurisé ici.
+3. Définissez les permissions pour les nouveaux utilisateurs dans le fichier `configs/acc.json`. Nous recommandons une échelle de permissions de 0 à 5.
+4. Exécutez le fichier `configs/updateSQL.php`.
+5. Ouvrez la console du serveur de base de données et exécutez le fichier `configs/photofoxDB.sql`.
 
 ### Permissions
 
@@ -120,14 +117,14 @@ Un utilisateur peut effectuer des actions correspondant à son niveau de permiss
 - **6 :** Approuver des publications
 - **7 :** Supprimer des publications
 
-**Support utilisateur :**
+**Support de utilisateurs :**
 
 - **8 :** Approuver des utilisateurs
 
 **Admin :**
 
 - **9 :** Distribuer des permissions de niveau 0 à 8
-- **10 :** Assigner le niveau de permission 9
+- **10 :** Asseigner le niveau de permission 9
 
 ---
 
@@ -135,12 +132,11 @@ Un utilisateur peut effectuer des actions correspondant à son niveau de permiss
 
 **Español:**
 
-1. Cambie la ruta en el archivo `configs/config.php` al directorio en el que ha instalado este proyecto.
-2. Ajuste las credenciales de acceso en el archivo `configs/db.json` y elija una contraseña segura.
-3. Actualice en el archivo `configs/server.json` las credenciales de administrador necesarias para activar usuarios con códigos de un solo uso. Elija también una contraseña segura aquí.
-4. Establezca los permisos para los nuevos usuarios en el archivo `configs/acc.json`. Recomendamos una escala de permisos de 0 a 5.
-5. Ejecute el archivo `configs/updateSQL.php`.
-6. Abra la consola del servidor de la base de datos y ejecute el archivo `configs/photofoxDB.sql`.
+1. Ajuste las credenciales de acceso en el archivo `configs/db.json` y elija una contraseña segura.
+2. Actualice en el archivo `configs/server.json` las credenciales de administrador necesarias para activar usuarios con códigos de un solo uso. Elija también una contraseña segura aquí.
+3. Establezca los permisos para los nuevos usuarios en el archivo `configs/acc.json`. Recomendamos una escala de permisos de 0 a 5.
+4. Ejecute el archivo `configs/updateSQL.php`.
+5. Abra la consola del servidor de la base de datos y ejecute el archivo `configs/photofoxDB.sql`.
 
 ### Permisos
 
@@ -149,7 +145,7 @@ Un usuario puede realizar acciones que corresponden a su nivel de permiso o a un
 **Usuario normal:**
 
 - **0:** Sin permisos
-- **1:** Ver y reportar publicaciones
+- **1:** Visualizar y reportar publicaciones
 - **2:** Dar "me gusta" a publicaciones
 - **3:** Comentar publicaciones
 
@@ -161,7 +157,7 @@ Un usuario puede realizar acciones que corresponden a su nivel de permiso o a un
 **Soporte:**
 
 - **6:** Aprobar publicaciones
-- **7:** Borrar publicaciones
+- **7:** Eliminar publicaciones
 
 **Soporte de usuarios:**
 
@@ -178,12 +174,11 @@ Un usuario puede realizar acciones que corresponden a su nivel de permiso o a un
 
 **Italiano:**
 
-1. Modifica il percorso nel file `configs/config.php` alla directory in cui hai installato questo progetto.
-2. Regola le credenziali di accesso nel file `configs/db.json` e scegli una password sicura.
-3. Aggiorna nel file `configs/server.json` le credenziali di amministratore necessarie per attivare gli utenti con codici monouso. Scegli anche qui una password sicura.
-4. Imposta i permessi per i nuovi utenti nel file `configs/acc.json`. Raccomandiamo una scala di permessi da 0 a 5.
-5. Esegui il file `configs/updateSQL.php`.
-6. Apri la console del server del database ed esegui il file `configs/photofoxDB.sql`.
+1. Regola le credenziali di accesso nel file `configs/db.json` e scegli una password sicura.
+2. Aggiorna nel file `configs/server.json` le credenziali di amministratore necessarie per attivare gli utenti con codici monouso. Scegli anche qui una password sicura.
+3. Imposta i permessi per i nuovi utenti nel file `configs/acc.json`. Raccomandiamo una scala di permessi da 0 a 5.
+4. Esegui il file `configs/updateSQL.php`.
+5. Apri la console del server del database ed esegui il file `configs/photofoxDB.sql`.
 
 ### Permessi
 
@@ -221,12 +216,11 @@ Un utente può compiere azioni che corrispondono al suo livello di permesso o in
 
 **Português:**
 
-1. Altere o caminho no arquivo `configs/config.php` para o diretório onde você instalou este projeto.
-2. Ajuste as credenciais de acesso no arquivo `configs/db.json` e escolha uma senha segura.
-3. Atualize no arquivo `configs/server.json` as credenciais de administrador necessárias para ativar usuários com códigos de uso único. Escolha também uma senha segura aqui.
-4. Defina as permissões para novos usuários no arquivo `configs/acc.json`. Recomendamos uma escala de permissões de 0 a 5.
-5. Execute o arquivo `configs/updateSQL.php`.
-6. Abra o console do servidor de banco de dados e execute o arquivo `configs/photofoxDB.sql`.
+1. Ajuste as credenciais de acesso no arquivo `configs/db.json` e escolha uma senha segura.
+2. Atualize no arquivo `configs/server.json` as credenciais de administrador necessárias para ativar usuários com códigos de uso único. Escolha também uma senha segura aqui.
+3. Defina as permissões para novos usuários no arquivo `configs/acc.json`. Recomendamos uma escala de permissões de 0 a 5.
+4. Execute o arquivo `configs/updateSQL.php`.
+5. Abra o console do servidor de banco de dados e execute o arquivo `configs/photofoxDB.sql`.
 
 ### Permissões
 

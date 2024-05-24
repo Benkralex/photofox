@@ -1,10 +1,4 @@
 <?php
-//Path, were the project is intalled
-define('MAIN_LOC', 'C:/xampp/htdocs/photofox');
-
-
-
-//Don't change
 function getConfig($configFile) {
     if (!file_exists($configFile)) {
         die("Konfigurationsdatei nicht gefunden!");
@@ -27,8 +21,7 @@ function addConfigKey($configFile, $key, $value) {
     }
 }
 function getDefaultPerm() {
-    $file = MAIN_LOC.'/configs/acc.json';
-    echo $file;
+    $file = __DIR__.'/acc.json';
     $config = getConfig($file);
     if (isset($config['default-permission'])) {
         return $config['default-permission'];
@@ -38,7 +31,8 @@ function getDefaultPerm() {
     }
 }
 function getDBConn() {
-    $config = getConfig(MAIN_LOC.'/configs/db.json');
+    $file = __DIR__.'/db.json';
+    $config = getConfig($file);
     $conn = new mysqli(
         $config['db_host'], 
         $config['db_user'], 
