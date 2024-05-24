@@ -1,0 +1,58 @@
+/* Nutzerseite */
+#user-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: flex-start;
+  padding: 20px;
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  text-decoration: none; /* Entfernt die Unterstreichung */
+  color: inherit; /* Behält die Textfarbe bei */
+}
+
+.user:hover {
+  background-color: #f0f0f0; /* Ändert die Hintergrundfarbe beim Hover */
+  text-decoration: none; /* Entfernt die Unterstreichung */
+  color: inherit; /* Behält die Textfarbe bei */
+}
+
+.profile-pic {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin-right: 30px;
+}
+
+.user-info {
+  text-align: left;
+}
+
+.user-info h3 {
+  margin-top: 0;
+}
+
+.user-info p {
+  margin-bottom: 5px;
+}
+
+/* Entfernt die Standard-Linkstile */
+.user a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.user a:hover {
+  text-decoration: none;
+  color: inherit;
+}

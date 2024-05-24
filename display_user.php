@@ -18,7 +18,7 @@ if ($result->num_rows > 0) {
 
     $profilePic = !empty($userData['profile_pic']) ? $userData['profile_pic'] : './img/noProfilePic.png';
 ?>
-
+<link rel="stylesheet" href="./display_user.css">
 <body>
     <div id="header">
         <img id="profile-pic" src="<?php echo $profilePic; ?>" alt="Profilbild" />
