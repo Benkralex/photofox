@@ -1,16 +1,13 @@
---  mysql -u root -p
 
-CREATE DATABASE photofox;
+CREATE DATABASE IF NOT EXISTS `photofox`;
 
-USE photofox;
+USE `photofox`;
 
-CREATE USER 'photofoxDBuser'@'localhost' IDENTIFIED BY '#!2024passw0rdDB';
-
-GRANT ALL PRIVILEGES ON photofox.* TO 'photofoxDBuser'@'localhost';
-
+CREATE USER IF NOT EXISTS 'photofoxDBuser'@'localhost' IDENTIFIED BY '#!2024passw0rdDB';
+GRANT ALL PRIVILEGES ON `photofox`.* TO 'photofoxDBuser'@'localhost';
 FLUSH PRIVILEGES;
 
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) NOT NULL UNIQUE,
     name VARCHAR(255) NOT NULL,
@@ -27,7 +24,7 @@ CREATE TABLE users (
     birthday DATE
 );
 
-CREATE TABLE posts (
+CREATE TABLE IF NOT EXISTS posts (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     title VARCHAR(255),
@@ -44,7 +41,7 @@ CREATE TABLE posts (
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
-CREATE TABLE comments (
+CREATE TABLE IF NOT EXISTS comments (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     post_id INT NOT NULL,
@@ -60,7 +57,7 @@ CREATE TABLE comments (
     FOREIGN KEY (answer_of) REFERENCES comments(id) ON DELETE CASCADE
 );
 
-CREATE TABLE followers (
+CREATE TABLE IF NOT EXISTS followers (
     follower_id INT NOT NULL,
     followed_id INT NOT NULL,
     PRIMARY KEY (follower_id, followed_id),
@@ -68,7 +65,7 @@ CREATE TABLE followers (
     FOREIGN KEY (followed_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
-CREATE TABLE logincodes (
+CREATE TABLE IF NOT EXISTS logincodes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     used BOOLEAN NOT NULL DEFAULT FALSE,
@@ -78,12 +75,10 @@ CREATE TABLE logincodes (
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
-
-
 INSERT INTO users (email, name, username, password, permission_level) VALUES (
     'admin@foxgalaxy.de',
     'Admin',
     'ADMIN',
-    '$2y$10$e0MYzXyjpJS2Hd/ZKiT/bOQEE5.YSU1aGB/XRCq1UtQF7vAB1D1sy',
+    '$2y$10$e0MYzXyjpJS2Hd/ZKiT/bOQEE5.YSU1aGB/XRCq1UtQF7vAB1D1sy!',
     10
 );

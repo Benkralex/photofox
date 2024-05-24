@@ -17,12 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
     xhr.onload = function () {
       if (xhr.status === 200) {
         var response = xhr.responseText.trim();
-        if (response === "TRUE" || response === "FALSE") {
-          // Wenn die Antwort erfolgreich ist, aktualisieren Sie den Wert in der Tabelle
-          target.textContent = response;
-        } else {
-          console.error("Fehler beim Aktualisieren des Aktivstatus");
-        }
+        location.reload();
       } else {
         console.error("Fehler beim Senden der AJAX-Anfrage");
       }

@@ -11,32 +11,27 @@ if (isset($_POST['code'])) {
         $row = $result->fetch_assoc();
         $active_count = $row['active_count'];
 
-        if ($active_count < 10) {
-            // SQL-Abfrage zum Umkehren des Wertes von active
-            $sql_update_active = "UPDATE logincodes SET active = NOT active WHERE code = ?";
-            $stmt = $conn->prepare($sql_update_active);
-            $stmt->bind_param('s', $code);
-            $stmt->execute();
-            $stmt->close();
-        } else {
-            $sql = "SELECT active FROM logincodes WHERE code = ?";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param('s', $code);
-            $stmt->execute();
-            $active = null;
-            if ($result && $result->num_rows > 0) {
-                $row = $result->fetch_assoc();
-                $active = $row['active'];
-            }
-            $stmt->close();
-            echo $active;
-            if ($active == "TRUE" || $active == 1) {
+    $sql = "SELECT code FROM logincodes WHERE active = TRUE";
+    $result = $conn->query($sql);
+    $notChanged = true;
+    if ($result && $result->num_rows > 0) {
+        while($row = $result->fetch_assoc()) {
+            if ($row['code'] == $code && $notChanged) {
                 $sql_update_active = "UPDATE logincodes SET active = NOT active WHERE code = ?";
                 $stmt = $conn->prepare($sql_update_active);
                 $stmt->bind_param('s', $code);
                 $stmt->execute();
                 $stmt->close();
+                $notChanged = false;
             }
+        }
+    }
+        if ($active_count < 10 && $notChanged) {
+            $sql_update_active = "UPDATE logincodes SET active = NOT active WHERE code = ?";
+            $stmt = $conn->prepare($sql_update_active);
+            $stmt->bind_param('s', $code);
+            $stmt->execute();
+            $stmt->close();
         }
     }
 
