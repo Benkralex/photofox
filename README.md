@@ -217,6 +217,8 @@ Un utente può compiere azioni che corrispondono al suo livello di permesso o in
 
 ---
 
+### Configuração do banco de dados
+
 **Português:**
 
 1. Altere o caminho no arquivo `configs/config.php` para o diretório onde você instalou este projeto.
