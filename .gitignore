@@ -1,6 +1,7 @@
 uploads/*
 
-uploads/profilePic/*
-
 !uploads/.gitkeep
+
 !uploads/profilePic/.gitkeep
+
+uploads/profilePic/*
