@@ -7,7 +7,6 @@ if ($_SERVER["REQUEST_METHOD"] != "GET" || !isset($_GET['id'])) {
 $title = 'Photofox - Post - ' . $_GET['id'];
 $currentPage = '';
 require_once('nav.php');
-
 require_once 'database.php';
 
 // Überprüfen, ob der Benutzer eingeloggt ist
@@ -23,30 +22,18 @@ if ($post_id <= 0) {
     die("Ungültige Post-ID.");
 }
 
-// Benutzer-ID aus der Session abrufen
+// Überprüfen, ob ein Eintrag in der views-Tabelle für diesen Benutzer und diesen Post existiert
 $user_id = $_SESSION['user_id'];
-
-// Überprüfen, ob der Benutzer existiert
-$user_check_stmt = $conn->prepare('SELECT id FROM users WHERE id = ?');
-$user_check_stmt->bind_param('i', $user_id);
-$user_check_stmt->execute();
-$user_exists = $user_check_stmt->get_result()->fetch_assoc();
-
-if (!$user_exists) {
-    die("Benutzer existiert nicht.");
-}
-
-// Überprüfen, ob ein Eintrag in der views-Tabelle existiert, der anzeigt, dass der Benutzer die Seite bereits besucht hat
 $view_check_stmt = $conn->prepare('SELECT * FROM views WHERE user_id = ? AND post_id = ?');
 $view_check_stmt->bind_param('ii', $user_id, $post_id);
 $view_check_stmt->execute();
-$view_exists = $view_check_stmt->get_result()->fetch_assoc();
+$view_exists = $view_check_stmt->get_result()->num_rows > 0;
 
 if (!$view_exists) {
-    // Neue Ansicht hinzufügen
-    $add_view_stmt = $conn->prepare('INSERT INTO views (user_id, post_id) VALUES (?, ?)');
-    $add_view_stmt->bind_param('ii', $user_id, $post_id);
-    $add_view_stmt->execute();
+    // Eine neue Ansicht für den Post hinzufügen
+    $insert_view_stmt = $conn->prepare('INSERT INTO views (user_id, post_id) VALUES (?, ?)');
+    $insert_view_stmt->bind_param('ii', $user_id, $post_id);
+    $insert_view_stmt->execute();
 }
 
 // Den spezifischen Post aus der Datenbank abrufen
@@ -64,6 +51,18 @@ $comment_stmt = $conn->prepare('SELECT comments.*, users.username, users.profile
 $comment_stmt->bind_param('i', $post_id);
 $comment_stmt->execute();
 $comments = $comment_stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+// Anzahl der Likes für den Post abrufen
+$like_stmt = $conn->prepare('SELECT COUNT(*) as like_count FROM likes WHERE post_id = ?');
+$like_stmt->bind_param('i', $post_id);
+$like_stmt->execute();
+$like_count = $like_stmt->get_result()->fetch_assoc()['like_count'];
+
+// Prüfen, ob der Benutzer den Post bereits geliked hat
+$user_like_stmt = $conn->prepare('SELECT * FROM likes WHERE user_id = ? AND post_id = ?');
+$user_like_stmt->bind_param('ii', $user_id, $post_id);
+$user_like_stmt->execute();
+$user_has_liked = $user_like_stmt->get_result()->num_rows > 0;
 
 // Benutzerinformationen aus der Session
 $email = $_SESSION['email'];
@@ -86,6 +85,18 @@ $birthday = $_SESSION['birthday'];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($post['title']); ?> - PhotoFox</title>
     <link rel="stylesheet" href="post.css">
+    <style>
+        .like-heart {
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            background-repeat: no-repeat;
+            background-size: contain;
+            vertical-align: middle;
+            /* Hier hinzugefügt */
+            display: inline-block;
+        }
+    </style>
 </head>
 
 <body>
@@ -103,6 +114,15 @@ $birthday = $_SESSION['birthday'];
                 <h2><?php echo htmlspecialchars($post['title']); ?></h2>
                 <div class="meta">von <?php echo htmlspecialchars($post['username']); ?> am <?php echo htmlspecialchars($post['posted_at']); ?></div>
                 <p><?php echo nl2br(htmlspecialchars($post['description'])); ?></p>
+            </div>
+            <div class="post-actions">
+                <form action="like.php" method="post">
+                    <input type="hidden" name="post_id" value="<?php echo $post_id; ?>">
+                </form>
+                <div style="display: flex; align-items: center;">
+                    <span id="like-count"><?php echo $like_count; ?></span>
+                    <span id="like-heart" class="like-heart"><?php include './img/like_' . ($user_has_liked ? 'filled' : 'unfilled') . '.svg'; ?></span>
+                </div>
             </div>
         </div>
         <div class="comments">
@@ -137,6 +157,30 @@ $birthday = $_SESSION['birthday'];
     <div class="footer">
         <p>&copy; 2024 PhotoFox. Alle Rechte vorbehalten.</p>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const likeHeart = document.getElementById('like-heart');
+            const postId = <?php echo $post_id; ?>;
+
+            likeHeart.addEventListener('click', function() {
+                fetch('like.php', {
+                        method: 'POST',
+                        body: new URLSearchParams({
+                            post_id: postId
+                        })
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        // Nachdem der Like-Status erfolgreich aktualisiert wurde, lade die Seite neu
+                        window.location.reload();
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        });
+    </script>
 </body>
 
 </html>
