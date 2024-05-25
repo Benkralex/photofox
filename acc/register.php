@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $_SESSION['name'] = $user['name'];
                         $_SESSION['username'] = $user['username'];
                         $_SESSION['permission_level'] = $user['permission_level'];
-                        $_SESSION['profil_pic'] = $user['profile_pic'];
+                        $_SESSION['profile_pic'] = $user['profile_pic'];
                         $_SESSION['member_since'] = $user['member_since'];
                         $_SESSION['warnings'] = $user['warnings'];
                         $_SESSION['primary_color'] = $user['primary_color'];

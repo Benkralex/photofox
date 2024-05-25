@@ -45,7 +45,6 @@ CREATE TABLE IF NOT EXISTS users (
     posts_quantity INT DEFAULT 0,
     profile_pic VARCHAR(255),
     member_since DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    followers INT DEFAULT 0,
     warnings INT DEFAULT 0,
     primary_color CHAR(7),
     biography TEXT,
@@ -58,8 +57,6 @@ CREATE TABLE IF NOT EXISTS posts (
     title VARCHAR(255),
     description TEXT,
     src VARCHAR(255),
-    views INT DEFAULT 0,
-    likes INT DEFAULT 0,
     allowed BOOLEAN,
     reported BOOLEAN DEFAULT FALSE,
     tags JSON,
@@ -91,6 +88,22 @@ CREATE TABLE IF NOT EXISTS followers (
     PRIMARY KEY (follower_id, followed_id),
     FOREIGN KEY (follower_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (followed_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS views (
+    user_id INT NOT NULL,
+    post_id INT NOT NULL,
+    PRIMARY KEY (user_id, post_id),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS likes (
+    user_id INT NOT NULL,
+    post_id INT NOT NULL,
+    PRIMARY KEY (user_id, post_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS logincodes (

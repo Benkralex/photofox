@@ -23,15 +23,30 @@ if ($post_id <= 0) {
     die("Ungültige Post-ID.");
 }
 
-// Überprüfen, ob ein Cookie vorhanden ist, das anzeigt, dass der Benutzer die Seite bereits besucht hat
-if (!isset($_COOKIE['visited_post_' . $post_id])) {
-    // Erhöhe die Views-Zahl des Posts um 1
-    $update_stmt = $conn->prepare('UPDATE posts SET views = views + 1 WHERE id = ?');
-    $update_stmt->bind_param('i', $post_id);
-    $update_stmt->execute();
+// Benutzer-ID aus der Session abrufen
+$user_id = $_SESSION['user_id'];
 
-    // Setze ein Cookie, das anzeigt, dass der Benutzer die Seite bereits besucht hat
-    setcookie('visited_post_' . $post_id, '1', time() + (86400 * 30), "/"); // Cookie für 30 Tage gültig
+// Überprüfen, ob der Benutzer existiert
+$user_check_stmt = $conn->prepare('SELECT id FROM users WHERE id = ?');
+$user_check_stmt->bind_param('i', $user_id);
+$user_check_stmt->execute();
+$user_exists = $user_check_stmt->get_result()->fetch_assoc();
+
+if (!$user_exists) {
+    die("Benutzer existiert nicht.");
+}
+
+// Überprüfen, ob ein Eintrag in der views-Tabelle existiert, der anzeigt, dass der Benutzer die Seite bereits besucht hat
+$view_check_stmt = $conn->prepare('SELECT * FROM views WHERE user_id = ? AND post_id = ?');
+$view_check_stmt->bind_param('ii', $user_id, $post_id);
+$view_check_stmt->execute();
+$view_exists = $view_check_stmt->get_result()->fetch_assoc();
+
+if (!$view_exists) {
+    // Neue Ansicht hinzufügen
+    $add_view_stmt = $conn->prepare('INSERT INTO views (user_id, post_id) VALUES (?, ?)');
+    $add_view_stmt->bind_param('ii', $user_id, $post_id);
+    $add_view_stmt->execute();
 }
 
 // Den spezifischen Post aus der Datenbank abrufen
@@ -51,12 +66,11 @@ $comment_stmt->execute();
 $comments = $comment_stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
 // Benutzerinformationen aus der Session
-$user_id = $_SESSION['user_id'];
 $email = $_SESSION['email'];
 $name = $_SESSION['name'];
 $username = $_SESSION['username'];
 $permission_level = $_SESSION['permission_level'];
-$profile_pic = $_SESSION['profil_pic'];
+$profile_pic = $_SESSION['profile_pic'];
 $member_since = $_SESSION['member_since'];
 $warnings = $_SESSION['warnings'];
 $primary_color = $_SESSION['primary_color'];

@@ -2,33 +2,55 @@
 $title = 'Photofox - Einstellungen';
 $currentPage = 'acc_settings';
 require_once('./nav.php');
+require_once('./database.php');
+
+$user_id = $_SESSION['user_id'];
+$email = $_SESSION['email'];
+$name = $_SESSION['name'];
+$username = $_SESSION['username'];
+$permission_level = $_SESSION['permission_level'];
+$profile_pic = $_SESSION['profile_pic'];
+$member_since = $_SESSION['member_since'];
+$warnings = $_SESSION['warnings'];
+$primary_color = $_SESSION['primary_color'];
+$biography = $_SESSION['biography'];
+$birthday = $_SESSION['birthday'];
+
 ?>
 
+<head>
+    <link rel="stylesheet" href="acc-settings.css">
+</head>
+
 <body>
-    <div style="display: flex;width: 100%;">
-        <?php echo '<div class="content"> E-Mail: <div class="disabled-div">' . $_SESSION['email'] . '</div>'
-            . '<br>Name: <div class="disabled-div">' . $_SESSION['name'] . '</div>'
-            . '<br>Nutzername: <div class="disabled-div">' . $_SESSION['username'] . '</div>'
-            . '<br>Profielbild: <div class="disabled-div">' . $_SESSION['profil_pic'] . '</div>'
-            . '<br>Farbe: <div class="disabled-div">' . $_SESSION['primary_color'] . '</div>'
-            . '<br>Biografie: <div class="disabled-div">' . $_SESSION['biography'] . '</div>'
-            . '<br>Geburtstag: <div class="disabled-div">' . $_SESSION['birthday'] . '</div>'
-            . '<br>Verwarnungen: <div class="disabled-div">' . $_SESSION['warnings'] . '</div>'
-            . '<br>Mitglied seit: <div class="disabled-div">' . $_SESSION['member_since'] . '</div></div>';
-        ?><br><br>
-        <div class="content">
-            <form methode="GET" action="./updateUser.php">
-                <select id="field" name="field">
-                    <option value="email">Email</option>
-                    <option value="name">Name</option>
-                    <option value="username">Nutzername</option>
-                    <option value="primary_color">Profiel Farbe</option>
-                    <option value="biography">Biografie</option>
-                    <option value="birthday">Geburtstag</option>
-                </select><br>
-                <input type="text" id="value" placeholder="Neuer Wert" name="value" />
-                <button type="submit">Ändern</button>
-            </form>
-        </div>
+    <div class="container">
+        <h1>Account Settings</h1>
+        <form action="./acc/updateUser.php" method="post">
+            <label for="email">Email:</label>
+            <input type="text" id="email" name="email" value="<?php echo $email; ?>" readonly>
+
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" value="<?php echo $name; ?>">
+
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" value="<?php echo $username; ?>">
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password">
+
+            <label for="profile_pic">Profile Pic:</label>
+            <input type="text" id="profile_pic" name="profile_pic" value="<?php echo $profile_pic; ?>">
+
+            <label for="primary_color">Primary Color:</label>
+            <input type="text" id="primary_color" name="primary_color" value="<?php echo $primary_color; ?>">
+
+            <label for="biography">Biography:</label>
+            <textarea id="biography" name="biography"><?php echo $biography; ?></textarea>
+
+            <label for="birthday">Birthday:</label>
+            <input type="date" id="birthday" name="birthday" value="<?php echo $birthday; ?>">
+
+            <input type="submit" value="Update">
+        </form>
     </div>
 </body>

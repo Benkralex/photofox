@@ -10,8 +10,11 @@ if ($_SERVER["REQUEST_METHOD"] != "GET" || !isset($_GET['user'])) {
 }
 
 $user = $_GET['user'];
-$query = "SELECT * FROM users WHERE username = '$user'";
-$result = $conn->query($query);
+$query = "SELECT * FROM users WHERE username = ?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("s", $user);
+$stmt->execute();
+$result = $stmt->get_result();
 
 if ($result->num_rows > 0) {
     $userData = $result->fetch_assoc();
@@ -21,10 +24,23 @@ if ($result->num_rows > 0) {
     $g = hexdec(substr($bgColor, 3, 2));
     $b = hexdec(substr($bgColor, 5, 2));
     $bgBrightness = (($r * 299) + ($g * 587) + ($b * 114)) / 1000;
-    if ($bgBrightness > 125) {
-        $textColor = '#000';
-    } else {
-        $textColor = '#fff';
+    $textColor = $bgBrightness > 125 ? '#000' : '#fff';
+
+    // Anzahl der Follower abrufen
+    $follower_stmt = $conn->prepare('SELECT COUNT(*) as follower_count FROM followers WHERE followed_id = ?');
+    $follower_stmt->bind_param('i', $userData['id']);
+    $follower_stmt->execute();
+    $follower_result = $follower_stmt->get_result()->fetch_assoc();
+    $follower_count = $follower_result['follower_count'];
+
+    // Prüfen, ob der eingeloggte Benutzer dem aktuellen Benutzer folgt
+    $is_following = false;
+    if (isset($_SESSION['user_id'])) {
+        $check_follow_stmt = $conn->prepare('SELECT COUNT(*) as is_following FROM followers WHERE follower_id = ? AND followed_id = ?');
+        $check_follow_stmt->bind_param('ii', $_SESSION['user_id'], $userData['id']);
+        $check_follow_stmt->execute();
+        $check_follow_result = $check_follow_stmt->get_result()->fetch_assoc();
+        $is_following = $check_follow_result['is_following'] > 0;
     }
 ?>
     <link rel="stylesheet" href="./display_user.css">
@@ -36,9 +52,16 @@ if ($result->num_rows > 0) {
     </style>
     <div id="header">
         <img id="profile-pic" src="<?php echo $profilePic; ?>" alt="Profilbild" />
-        <h1>@<?php echo $userData['username']; ?></h1>
-        <p><?php echo $userData['biography']; ?></p>
-        <p>Beiträge: <?php echo $userData['posts_quantity']; ?> | Follower: <?php echo $userData['followers']; ?></p>
+        <h1>@<?php echo htmlspecialchars($userData['username']); ?></h1>
+        <p><?php echo htmlspecialchars($userData['biography']); ?></p>
+        <p>Beiträge: <?php echo htmlspecialchars($userData['posts_quantity']); ?> | Follower: <?php echo $follower_count; ?></p>
+        <?php if (isset($_SESSION['user_id']) && $_SESSION['user_id'] != $userData['id']) : ?>
+            <form action="follow.php" method="post">
+                <input type="hidden" name="followed_id" value="<?php echo $userData['id']; ?>">
+                <input type="hidden" name="username" value="<?php echo $userData['username']; ?>">
+                <button type="submit"><?php echo $is_following ? 'Entfolgen' : 'Folgen'; ?></button>
+            </form>
+        <?php endif; ?>
     </div>
     <div id="tabs">
         <button href="#" id="showAll" class="tab">Alles</button>
@@ -50,23 +73,43 @@ if ($result->num_rows > 0) {
         <?php
         // SQL-Abfrage für Beiträge des Benutzers
         $userId = $userData['id'];
-        $postQuery = "SELECT * FROM posts WHERE user_id = '$userId' AND allowed = 1 ORDER BY posted_at DESC";
-        $postResult = $conn->query($postQuery);
+        $postQuery = "SELECT * FROM posts WHERE user_id = ? AND allowed = 1 ORDER BY posted_at DESC";
+        $post_stmt = $conn->prepare($postQuery);
+        $post_stmt->bind_param('i', $userId);
+        $post_stmt->execute();
+        $postResult = $post_stmt->get_result();
 
         // Überprüfen, ob Beiträge gefunden wurden
         if ($postResult->num_rows > 0) {
             while ($post = $postResult->fetch_assoc()) {
+                // Anzahl der Views für den Post abrufen
+                $view_stmt = $conn->prepare('SELECT COUNT(*) as view_count FROM views WHERE post_id = ?');
+                $view_stmt->bind_param('i', $post['id']);
+                $view_stmt->execute();
+                $view_result = $view_stmt->get_result()->fetch_assoc();
+                $view_count = $view_result['view_count'];
+
+                // Anzahl der Likes für den Post abrufen
+                $like_stmt = $conn->prepare('SELECT COUNT(*) as like_count FROM likes WHERE post_id = ?');
+                $like_stmt->bind_param('i', $post['id']);
+                $like_stmt->execute();
+                $like_result = $like_stmt->get_result()->fetch_assoc();
+                $like_count = $like_result['like_count'];
         ?>
-                <div class="content-box <?php echo $post['type']; ?>">
+                <div class="content-box <?php echo htmlspecialchars($post['type']); ?>">
                     <a class="post-link" href="post.php?id=<?php echo $post['id']; ?>">
-                        <img class="post-img" src="./uploads/<?php echo $post['src']; ?>" alt="Beitrag" />
+                        <img class="post-img" src="./uploads/<?php echo htmlspecialchars($post['src']); ?>" alt="Beitrag" />
                         <div class="post-date">
                             <span class="material-symbols-rounded">calendar_month</span>
                             <span class="date"><?php echo date('d.m.Y', strtotime($post['posted_at'])); ?></span>
                         </div>
                         <div class="view-post-btn">
                             <span class="material-symbols-rounded">visibility</span>
-                            <span class="views"><?php echo $post['views']; ?></span>
+                            <span class="views"><?php echo $view_count; ?></span>
+                        </div>
+                        <div class="like-post-btn">
+                            <span class="material-symbols-rounded">thumb_up</span>
+                            <span class="likes"><?php echo $like_count; ?></span>
                         </div>
                     </a>
                 </div>

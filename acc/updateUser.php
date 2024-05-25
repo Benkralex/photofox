@@ -2,26 +2,31 @@
 require_once('../database.php');
 session_start();
 
-function updateUserDetail($conn, $username, $field, $newValue)
-{
-    $allowedFields = ['email', 'name', 'username', 'primary_color', 'biography', 'birthday'];
+$user_id = $_SESSION['user_id'];
 
-    if (!in_array($field, $allowedFields)) {
-        return;
-    }
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $name = $_POST['name'];
+    $username = $_POST['username'];
+    $password = $_POST['password']; // You may want to hash this password before storing it in the database
+    $profile_pic = $_POST['profile_pic'];
+    $primary_color = $_POST['primary_color'];
+    $biography = $_POST['biography'];
+    $birthday = $_POST['birthday'];
 
-    $sql = "UPDATE users SET " . $field . " = ? WHERE username = ?";
-
-    echo $sql;
-    if ($stmt = $conn->prepare($sql)) {
-        $stmt->bind_param("ss", $newValue, $username);
-
-        $stmt->execute();
-
-        $stmt->close();
-        $_SESSION[$field] = $newValue;
+    // Update the database
+    $sql = "UPDATE users SET name='$name', username='$username', password='$password', profile_pic='$profile_pic', primary_color='$primary_color', biography='$biography', birthday='$birthday' WHERE id='$user_id'";
+    if ($conn->query($sql) === TRUE) {
+        // Update session variables if needed
+        $_SESSION['name'] = $name;
+        $_SESSION['username'] = $username;
+        $_SESSION['profile_pic'] = $profile_pic;
+        $_SESSION['primary_color'] = $primary_color;
+        $_SESSION['biography'] = $biography;
+        $_SESSION['birthday'] = $birthday;
+        echo "Record updated successfully";
+    } else {
+        echo "Error updating record: " . $conn->error;
     }
 }
-updateUserDetail($conn, $_SESSION['username'], $_GET['field'], $_GET['value']);
-header("Location: ./");
-exit();
+
+$conn->close();
