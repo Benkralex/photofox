@@ -1,7 +1,6 @@
 
 <?php
 require('../database.php');
-require('../configs/config.php');
 // Start the session to store user information if needed
 session_start();
 

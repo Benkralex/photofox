@@ -5,7 +5,7 @@ if ($_SERVER["REQUEST_METHOD"] != "GET" || !isset($_GET['id'])) {
 }
 
 $title = 'Photofox - Post - ' . $_GET['id'];
-$currentPage = 'index';
+$currentPage = '';
 require_once('nav.php');
 
 require_once 'database.php';

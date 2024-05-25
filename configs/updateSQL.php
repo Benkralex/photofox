@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS users (
     name VARCHAR(255) NOT NULL,
     username VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    permission_level TINYINT NOT NULL CHECK (permission_level BETWEEN 0 AND 10) DEFAULT 0,
+    permission_level TINYINT NOT NULL DEFAULT 0,
     posts_quantity INT DEFAULT 0,
     profile_pic VARCHAR(255),
     member_since DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
