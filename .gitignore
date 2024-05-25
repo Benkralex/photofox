@@ -1,7 +1,0 @@
-uploads/*
-
-!uploads/.gitkeep
-
-!uploads/profilePic/.gitkeep
-
-uploads/profilePic/*
