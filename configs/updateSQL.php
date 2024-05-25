@@ -1,6 +1,7 @@
 <?php
 // Funktion zum Laden der Konfigurationsdaten aus der JSON-Datei
-function getConfig($configFile) {
+function getConfig($configFile)
+{
     if (!file_exists($configFile)) {
         die("Konfigurationsdatei nicht gefunden: $configFile");
     }
@@ -115,4 +116,3 @@ INSERT INTO users (email, name, username, password, permission_level) VALUES (
 file_put_contents('photofoxDB.sql', $sql);
 
 echo "SQL-Datei wurde erfolgreich generiert.";
-?>

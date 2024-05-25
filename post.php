@@ -24,14 +24,14 @@ if ($post_id <= 0) {
 }
 
 // Überprüfen, ob ein Cookie vorhanden ist, das anzeigt, dass der Benutzer die Seite bereits besucht hat
-if (!isset($_COOKIE['visited_post_'.$post_id])) {
+if (!isset($_COOKIE['visited_post_' . $post_id])) {
     // Erhöhe die Views-Zahl des Posts um 1
     $update_stmt = $conn->prepare('UPDATE posts SET views = views + 1 WHERE id = ?');
     $update_stmt->bind_param('i', $post_id);
     $update_stmt->execute();
 
     // Setze ein Cookie, das anzeigt, dass der Benutzer die Seite bereits besucht hat
-    setcookie('visited_post_'.$post_id, '1', time() + (86400 * 30), "/"); // Cookie für 30 Tage gültig
+    setcookie('visited_post_' . $post_id, '1', time() + (86400 * 30), "/"); // Cookie für 30 Tage gültig
 }
 
 // Den spezifischen Post aus der Datenbank abrufen
@@ -66,18 +66,20 @@ $birthday = $_SESSION['birthday'];
 
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($post['title']); ?> - PhotoFox</title>
     <link rel="stylesheet" href="post.css">
 </head>
+
 <body>
     <div class="content">
         <div class="post">
-            <?php if ($post['type'] == 'image'): ?>
+            <?php if ($post['type'] == 'image') : ?>
                 <img src="<?php echo './uploads/' . htmlspecialchars($post['src']); ?>" alt="<?php echo htmlspecialchars($post['title']); ?>">
-            <?php elseif ($post['type'] == 'video'): ?>
+            <?php elseif ($post['type'] == 'video') : ?>
                 <video controls>
                     <source src="<?php echo './uploads/' . htmlspecialchars($post['src']); ?>" type="video/mp4">
                     Your browser does not support the video tag.
@@ -91,8 +93,8 @@ $birthday = $_SESSION['birthday'];
         </div>
         <div class="comments">
             <h3>Kommentare</h3>
-            <?php if (count($comments) > 0): ?>
-                <?php foreach ($comments as $comment): ?>
+            <?php if (count($comments) > 0) : ?>
+                <?php foreach ($comments as $comment) : ?>
                     <div class="comment">
                         <div class="comment-header">
                             <img src="<?php echo './uploads/profilePic/' . htmlspecialchars($comment['profile_pic']); ?>" alt="Profilbild" class="comment-profile-pic">
@@ -104,7 +106,7 @@ $birthday = $_SESSION['birthday'];
                         </div>
                     </div>
                 <?php endforeach; ?>
-            <?php else: ?>
+            <?php else : ?>
                 <p>Keine Kommentare vorhanden.</p>
             <?php endif; ?>
         </div>
@@ -122,4 +124,5 @@ $birthday = $_SESSION['birthday'];
         <p>&copy; 2024 PhotoFox. Alle Rechte vorbehalten.</p>
     </div>
 </body>
+
 </html>

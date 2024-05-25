@@ -5,32 +5,32 @@ require_once('nav.php');
 require('./database.php');
 
 $user_id = $_SESSION['user_id'];
-    $sql = "SELECT MAX(posted_at) AS last_post_time FROM posts WHERE user_id = ?";
-    
-    $stmt = $conn->prepare($sql);
-    if($stmt === false) {
-        die("Error while preparing the statement: " . $conn->error);
-    }
+$sql = "SELECT MAX(posted_at) AS last_post_time FROM posts WHERE user_id = ?";
 
-    $stmt->bind_param("i", $user_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $row = $result->fetch_assoc();
-    
-    // Überprüfen, ob der Benutzer in der letzten Stunde bereits einen Beitrag erstellt hat
-    if ($row['last_post_time']) {
-        $last_post_time = strtotime($row['last_post_time']);
-        $current_time = time();
-        $time_diff = $current_time - $last_post_time;
+$stmt = $conn->prepare($sql);
+if ($stmt === false) {
+    die("Error while preparing the statement: " . $conn->error);
+}
 
-        if ($time_diff < 3600) { // 3600 Sekunden = 1 Stunde
-            $remaining_time = 3600 - $time_diff;
-            $time_message = gmdate("i", $remaining_time);
-            die("Du kannst erst in ".$time_message."min wieder posten");
-        } elseif ($_SESSION['permission_level'] < 4) {
-            die("Du hast keine Berechtigung, Posts hochzuladen");
-        }
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+
+// Überprüfen, ob der Benutzer in der letzten Stunde bereits einen Beitrag erstellt hat
+if ($row['last_post_time']) {
+    $last_post_time = strtotime($row['last_post_time']);
+    $current_time = time();
+    $time_diff = $current_time - $last_post_time;
+
+    if ($time_diff < 3600) { // 3600 Sekunden = 1 Stunde
+        $remaining_time = 3600 - $time_diff;
+        $time_message = gmdate("i", $remaining_time);
+        die("Du kannst erst in " . $time_message . "min wieder posten");
+    } elseif ($_SESSION['permission_level'] < 4) {
+        die("Du hast keine Berechtigung, Posts hochzuladen");
     }
+}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Daten aus dem Formular erhalten
@@ -52,10 +52,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // SQL-Abfrage zum Einfügen des Beitrags in die Datenbank
     $sql = "INSERT INTO posts (user_id, title, description, src, type, tags, allowed) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    
+
     // Prepare statement
     $stmt = $conn->prepare($sql);
-    if($stmt === false) {
+    if ($stmt === false) {
         die("Error while preparing the statement: " . $conn->error);
     }
 
@@ -74,7 +74,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bind_param("isssssi", $user_id, $title, $description, $src, $type, $tags, $allowed);
 
     $targetDir = './uploads/';
-    $tagetFile = $targetDir.basename($_FILES[$type]['name']);
+    $tagetFile = $targetDir . basename($_FILES[$type]['name']);
     if (move_uploaded_file($_FILES[$type]['tmp_name'], $tagetFile)) {
         echo 'erfolgreich hochgeladen';
     } else {
@@ -83,9 +83,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($stmt->execute()) {
         $sql_update = "UPDATE users SET posts_quantity = posts_quantity + 1 WHERE id = ?";
-        
+
         $stmt_update = $conn->prepare($sql_update);
-        if($stmt_update === false) {
+        if ($stmt_update === false) {
             die("Error while preparing the statement: " . $conn->error);
         }
 
@@ -105,7 +105,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Schließen der Anweisung und Verbindung
     $stmt->close();
     $conn->close();
-} else { echo'
+} else {
+    echo '
 <body>
     <h2>Create a New Post</h2>
     <form action="new_post.php" method="POST" enctype="multipart/form-data">
@@ -124,4 +125,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </body>
 ';
 }
-?>

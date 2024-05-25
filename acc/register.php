@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'];
     $code = $_POST['code'];
 
-    
+
     // SQL-Abfrage zum Prüfen, ob der Code aktiv und unbenutzt ist
     $sql = "SELECT active, used FROM logincodes WHERE code = ?";
     $stmt = $conn->prepare($sql);
@@ -26,21 +26,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($row['active'] == 1 && $row['used'] == 0) {
             // Prepare and execute the SQL statement
             $sql = "INSERT INTO users (email, name, username, password, permission_level) VALUES (
-                '".$email."',
-                '".$name."',
-                '".$username."',
-                '".$password."',
-                ".getDefaultPerm()."
+                '" . $email . "',
+                '" . $name . "',
+                '" . $username . "',
+                '" . $password . "',
+                " . getDefaultPerm() . "
             );";
             $result = $conn->query($sql);
 
-            $sql = "SELECT * FROM users WHERE username = '".$username."';";
+            $sql = "SELECT * FROM users WHERE username = '" . $username . "';";
             $result = $conn->query($sql);
 
             // Fetch the user data
             if ($result->num_rows > 0) {
-            // output data of each row
-                while($user = $result->fetch_assoc()) {
+                // output data of each row
+                while ($user = $result->fetch_assoc()) {
                     if ($password == $user['password']) {
                         // Store user information in session or perform other login actions
                         $_SESSION['user_id'] = $user['id'];

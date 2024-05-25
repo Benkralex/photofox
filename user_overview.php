@@ -7,18 +7,19 @@ $query = "SELECT * FROM users WHERE permission_level > 3 ORDER BY followers DESC
 $result = $conn->query($query);
 ?>
 <link rel="stylesheet" href="./user_overview.css">
+
 <body>
     <div id="user-list">
         <?php
         if ($result->num_rows > 0) {
             while ($userData = $result->fetch_assoc()) {
                 // Profilbild überprüfen
-                $profilePic = !empty($userData['profile_pic']) ? './uploads/profilePic/'.$userData['profile_pic'] : './img/noProfilePic.png';
+                $profilePic = !empty($userData['profile_pic']) ? './uploads/profilePic/' . $userData['profile_pic'] : './img/noProfilePic.png';
                 // Letzter Beitrag des Benutzers abrufen
                 $lastPostQuery = "SELECT * FROM posts WHERE user_id = '{$userData['id']}' ORDER BY posted_at DESC LIMIT 1";
                 $lastPostResult = $conn->query($lastPostQuery);
                 $lastPost = $lastPostResult->fetch_assoc();
-                ?>
+        ?>
                 <a href="./display_user.php?user=<?php echo $userData['username']; ?>" class="user">
                     <img class="profile-pic" src="<?php echo $profilePic; ?>" alt="Profilbild" />
                     <div class="user-info">
@@ -30,7 +31,7 @@ $result = $conn->query($query);
                         <?php endif; ?>
                     </div>
                 </a>
-                <?php
+        <?php
             }
         } else {
             echo "Keine Nutzer gefunden";
