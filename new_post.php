@@ -73,6 +73,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $stmt->bind_param("isssssi", $user_id, $title, $description, $src, $type, $tags, $allowed);
 
+    $targetDir = './uploads/';
+    $tagetFile = $targetDir.basename($_FILES[$type]['name']);
+    if (move_uploaded_file($_FILES[$type]['tmp_name'], $tagetFile)) {
+        echo 'erfolgreich hochgeladen';
+    } else {
+        echo 'Fehler bei upload!';
+    }
+
     if ($stmt->execute()) {
         $sql_update = "UPDATE users SET posts_quantity = posts_quantity + 1 WHERE id = ?";
         
