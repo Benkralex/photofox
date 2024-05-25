@@ -23,6 +23,17 @@ if ($post_id <= 0) {
     die("Ungültige Post-ID.");
 }
 
+// Überprüfen, ob ein Cookie vorhanden ist, das anzeigt, dass der Benutzer die Seite bereits besucht hat
+if (!isset($_COOKIE['visited_post_'.$post_id])) {
+    // Erhöhe die Views-Zahl des Posts um 1
+    $update_stmt = $conn->prepare('UPDATE posts SET views = views + 1 WHERE id = ?');
+    $update_stmt->bind_param('i', $post_id);
+    $update_stmt->execute();
+
+    // Setze ein Cookie, das anzeigt, dass der Benutzer die Seite bereits besucht hat
+    setcookie('visited_post_'.$post_id, '1', time() + (86400 * 30), "/"); // Cookie für 30 Tage gültig
+}
+
 // Den spezifischen Post aus der Datenbank abrufen
 $stmt = $conn->prepare('SELECT posts.*, users.username, users.profile_pic FROM posts JOIN users ON posts.user_id = users.id WHERE posts.id = ?');
 $stmt->bind_param('i', $post_id);
@@ -60,21 +71,8 @@ $birthday = $_SESSION['birthday'];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($post['title']); ?> - PhotoFox</title>
     <link rel="stylesheet" href="post.css">
-    <style>
-        .header {
-            background-color: <?php echo htmlspecialchars($primary_color); ?>;
-        }
-    </style>
 </head>
 <body>
-    <div class="header">
-        <div>
-            <h1>Willkommen bei PhotoFox, <?php echo htmlspecialchars($name); ?>!</h1>
-        </div>
-        <div>
-            <img src="<?php echo './uploads/profilePic/' . htmlspecialchars($profile_pic); ?>" alt="Profilbild">
-        </div>
-    </div>
     <div class="content">
         <div class="post">
             <?php if ($post['type'] == 'image'): ?>

@@ -178,3 +178,14 @@ body {
   margin-left: 0px;
   width: 20%;
 }
+
+/* Link-Styling */
+.post-link {
+  text-decoration: none; /* Link-Unterstreichung entfernen */
+  color: inherit; /* Textfarbe erben */
+}
+
+.post-link:hover {
+  text-decoration: none; /* Link-Unterstreichung entfernen */
+  color: inherit; /* Textfarbe erben */
+}

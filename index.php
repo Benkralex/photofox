@@ -20,7 +20,16 @@ $birthday = $_SESSION['birthday'];
 $stmt = $conn->prepare('SELECT posts.*, users.username, users.profile_pic FROM posts JOIN users ON posts.user_id = users.id ORDER BY posted_at DESC LIMIT 10');
 $stmt->execute();
 $posts = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-
+$bgColor = htmlspecialchars($_SESSION['primary_color']);
+    $r = hexdec(substr($bgColor, 1, 2));
+    $g = hexdec(substr($bgColor, 3, 2));
+    $b = hexdec(substr($bgColor, 5, 2));
+    $bgBrightness = (($r * 299) + ($g * 587) + ($b * 114)) / 1000;
+    if ($bgBrightness > 125) {
+    $textColor = '#000';
+    } else {
+        $textColor = '#fff';
+    }
 ?>
 
 <!DOCTYPE html>
@@ -32,7 +41,8 @@ $posts = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     <link rel="stylesheet" href="./index.css">
     <style>
         .header {
-            background-color: <?php echo htmlspecialchars($primary_color); ?>;
+            background-color: <?php echo $bgColor; ?>;
+            color: <?php echo $textColor; ?>;
         }
     </style>
 </head>
