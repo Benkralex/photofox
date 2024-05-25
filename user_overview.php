@@ -13,7 +13,7 @@ $result = $conn->query($query);
         if ($result->num_rows > 0) {
             while ($userData = $result->fetch_assoc()) {
                 // Profilbild überprüfen
-                $profilePic = !empty($userData['profile_pic']) ? $userData['profile_pic'] : './img/noProfilePic.png';
+                $profilePic = !empty($userData['profile_pic']) ? './uploads/profilePic/'.$userData['profile_pic'] : './img/noProfilePic.png';
                 // Letzter Beitrag des Benutzers abrufen
                 $lastPostQuery = "SELECT * FROM posts WHERE user_id = '{$userData['id']}' ORDER BY posted_at DESC LIMIT 1";
                 $lastPostResult = $conn->query($lastPostQuery);

@@ -16,7 +16,7 @@ $result = $conn->query($query);
 if ($result->num_rows > 0) {
     $userData = $result->fetch_assoc();
 
-    $profilePic = !empty($userData['profile_pic']) ? $userData['profile_pic'] : './img/noProfilePic.png';
+    $profilePic = !empty($userData['profile_pic']) ? './uploads/profilePic/'.$userData['profile_pic'] : './img/noProfilePic.png';
 ?>
 <link rel="stylesheet" href="./display_user.css">
 <body>
@@ -37,7 +37,7 @@ if ($result->num_rows > 0) {
         <?php
         // SQL-Abfrage für Beiträge des Benutzers
         $userId = $userData['id'];
-        $postQuery = "SELECT * FROM posts WHERE user_id = '$userId' AND allowed = 1";
+        $postQuery = "SELECT * FROM posts WHERE user_id = '$userId' AND allowed = 1 ORDER BY posted_at DESC";
         $postResult = $conn->query($postQuery);
 
         // Überprüfen, ob Beiträge gefunden wurden
@@ -45,7 +45,7 @@ if ($result->num_rows > 0) {
             while ($post = $postResult->fetch_assoc()) {
                 ?>
                 <div class="content-box <?php echo $post['type']; ?>">
-                    <img class="post-img" src="<?php echo $post['src']; ?>" alt="Beitrag" />
+                    <img class="post-img" src="./uploads/<?php echo $post['src']; ?>" alt="Beitrag" />
                     <div class="post-date">
                         <span class="material-symbols-rounded">calendar_month</span>
                         <span class="date"><?php echo date('d.m.Y', strtotime($post['posted_at'])); ?></span>
