@@ -84,7 +84,7 @@ $birthday = $_SESSION['birthday'];
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($post['title']); ?> - PhotoFox</title>
-    <link rel="stylesheet" href="post.css">
+    <link rel="stylesheet" href="./style/post.css">
     <style>
         .like-heart {
             cursor: pointer;

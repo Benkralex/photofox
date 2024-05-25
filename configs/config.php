@@ -46,3 +46,42 @@ function getDBConn()
     );
     return $conn;
 }
+function getImgDir()
+{
+    $file = __DIR__ . '/upload.json';
+    $config = getConfig($file);
+    $key = 'post-image';
+    if (isset($config[$key])) {
+        return $config[$key];
+    } else {
+        $value = './uploads/';
+        addConfigKey($file, $key, $value);
+        return $value;
+    }
+}
+function getVideoDir()
+{
+    $file = __DIR__ . '/upload.json';
+    $config = getConfig($file);
+    $key = 'post-video';
+    if (isset($config[$key])) {
+        return $config[$key];
+    } else {
+        $value = './uploads/';
+        addConfigKey($file, $key, $value);
+        return $value;
+    }
+}
+function getProfilePDir()
+{
+    $file = __DIR__ . '/upload.json';
+    $config = getConfig($file);
+    $key = 'profile-picture';
+    if (isset($config[$key])) {
+        return $config[$key];
+    } else {
+        $value = './uploads/profilePic/';
+        addConfigKey($file, $key, $value);
+        return $value;
+    }
+}

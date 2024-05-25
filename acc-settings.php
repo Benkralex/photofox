@@ -19,7 +19,7 @@ $birthday = $_SESSION['birthday'];
 ?>
 
 <head>
-    <link rel="stylesheet" href="acc-settings.css">
+    <link rel="stylesheet" href="./style/acc-settings.css">
 </head>
 
 <body>

@@ -43,7 +43,7 @@ if ($result->num_rows > 0) {
         $is_following = $check_follow_result['is_following'] > 0;
     }
 ?>
-    <link rel="stylesheet" href="./display_user.css">
+    <link rel="stylesheet" href="./style/display_user.css">
     <style>
         #header {
             background-color: <?php echo $bgColor; ?>;
@@ -67,7 +67,7 @@ if ($result->num_rows > 0) {
         <button href="#" id="showAll" class="tab">Alles</button>
         <button href="#" id="showImages" class="tab">Bilder</button>
         <button href="#" id="showVideos" class="tab">Videos</button>
-        <script src="user-posts-filter.js"></script>
+        <script src="./js/user-posts-filter.js"></script>
     </div>
     <div id="main-content">
         <?php

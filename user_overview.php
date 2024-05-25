@@ -6,7 +6,7 @@ require('./database.php');
 $query = "SELECT * FROM users WHERE permission_level > 3 ORDER BY followers DESC, posts_quantity DESC";
 $result = $conn->query($query);
 ?>
-<link rel="stylesheet" href="./user_overview.css">
+<link rel="stylesheet" href="./style/user_overview.css">
 
 <body>
     <div id="user-list">
