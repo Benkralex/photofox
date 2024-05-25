@@ -1,0 +1,75 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+.header {
+  background-color: #007bff; /* Standardfarbe, kann durch PHP überschrieben werden */
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header img {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+}
+
+.content {
+  padding: 20px;
+}
+
+.post {
+  background-color: white;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+}
+
+.post img,
+.post video {
+  max-width: 300px;
+  max-height: 200px;
+  border-radius: 5px;
+  margin-right: 20px; /* Bild nach rechts vom Text platzieren */
+}
+
+.post h2 {
+  margin-top: 0;
+}
+
+.post .meta {
+  font-size: 0.9em;
+  color: #666;
+}
+
+.post .content-text {
+  flex: 1;
+}
+
+/* Link-Styling */
+.post-link {
+  text-decoration: none; /* Link-Unterstreichung entfernen */
+  color: inherit; /* Textfarbe erben */
+}
+
+.post-link:hover {
+  text-decoration: none; /* Link-Unterstreichung entfernen */
+  color: inherit; /* Textfarbe erben */
+}
+
+.footer {
+  text-align: center;
+  padding: 10px;
+  background-color: #333;
+  color: white;
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+}
