@@ -3,7 +3,13 @@ $title = 'Photofox - Benutzer';
 $currentPage = 'user_overview';
 require_once('nav.php');
 require('./database.php');
-$query = "SELECT * FROM users WHERE permission_level > 3 ORDER BY followers DESC, posts_quantity DESC";
+$query = "SELECT u.*, 
+(SELECT COUNT(*) FROM posts WHERE user_id = u.id AND allowed = 1) AS post_quantity, 
+(SELECT COUNT(*) FROM followers WHERE followed_id = u.id) AS follower_count, 
+(SELECT MAX(posted_at) FROM posts WHERE user_id = u.id AND allowed = 1) AS last_post_date 
+FROM users u 
+WHERE u.permission_level > 3 
+ORDER BY follower_count DESC, post_quantity DESC;";
 $result = $conn->query($query);
 ?>
 <link rel="stylesheet" href="./style/user_overview.css">
@@ -13,21 +19,21 @@ $result = $conn->query($query);
         <?php
         if ($result->num_rows > 0) {
             while ($userData = $result->fetch_assoc()) {
-                // Profilbild überprüfen
+                if ($userData['last_post_date'] == null) {
+                    $lastPostDate = 'Keine Posts gefunden';
+                } else {
+                    $lastPostDate = date('d.m.Y, H:i', strtotime($userData['last_post_date']));
+                }
                 $profilePic = !empty($userData['profile_pic']) ? './uploads/profilePic/' . $userData['profile_pic'] : './img/noProfilePic.png';
-                // Letzter Beitrag des Benutzers abrufen
-                $lastPostQuery = "SELECT * FROM posts WHERE user_id = '{$userData['id']}' ORDER BY posted_at DESC LIMIT 1";
-                $lastPostResult = $conn->query($lastPostQuery);
-                $lastPost = $lastPostResult->fetch_assoc();
-        ?>
+                ?>
                 <a href="./display_user.php?user=<?php echo $userData['username']; ?>" class="user">
                     <img class="profile-pic" src="<?php echo $profilePic; ?>" alt="Profilbild" />
                     <div class="user-info">
                         <h3><?php echo $userData['username']; ?></h3>
-                        <p>Followers: <?php echo $userData['followers']; ?></p>
-                        <p>Anzahl der Beiträge: <?php echo $userData['posts_quantity']; ?></p>
+                        <p>Followers: <?php echo $userData['follower_count']; ?></p>
+                        <p>Anzahl der Beiträge: <?php echo $userData['post_quantity']; ?></p>
                         <?php if ($lastPost) : ?>
-                            <p>Zuletzt gepostet: <?php echo date('d.m.Y, H:i', strtotime($lastPost['posted_at'])); ?></p>
+                            <p>Zuletzt gepostet: <?php echo $lastPostDate; ?></p>
                         <?php endif; ?>
                     </div>
                 </a>

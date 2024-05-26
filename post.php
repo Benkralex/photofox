@@ -4,16 +4,10 @@ if ($_SERVER["REQUEST_METHOD"] != "GET" || !isset($_GET['id'])) {
     exit();
 }
 
-$title = 'Photofox - Post - ' . $_GET['id'];
+$title = 'Photofox - Post';
 $currentPage = '';
 require_once('nav.php');
 require_once 'database.php';
-
-// Überprüfen, ob der Benutzer eingeloggt ist
-if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
-    exit();
-}
 
 // Post-ID aus der URL abrufen
 $post_id = intval($_GET['id']);
@@ -22,64 +16,55 @@ if ($post_id <= 0) {
     die("Ungültige Post-ID.");
 }
 
-// Überprüfen, ob ein Eintrag in der views-Tabelle für diesen Benutzer und diesen Post existiert
+// Benutzer-ID aus der Session abrufen
 $user_id = $_SESSION['user_id'];
-$view_check_stmt = $conn->prepare('SELECT * FROM views WHERE user_id = ? AND post_id = ?');
-$view_check_stmt->bind_param('ii', $user_id, $post_id);
-$view_check_stmt->execute();
-$view_exists = $view_check_stmt->get_result()->num_rows > 0;
 
-if (!$view_exists) {
-    // Eine neue Ansicht für den Post hinzufügen
-    $insert_view_stmt = $conn->prepare('INSERT INTO views (user_id, post_id) VALUES (?, ?)');
-    $insert_view_stmt->bind_param('ii', $user_id, $post_id);
-    $insert_view_stmt->execute();
-}
-
-// Den spezifischen Post aus der Datenbank abrufen
-$stmt = $conn->prepare('SELECT posts.*, users.username, users.profile_pic FROM posts JOIN users ON posts.user_id = users.id WHERE posts.id = ?');
-$stmt->bind_param('i', $post_id);
-$stmt->execute();
-$post = $stmt->get_result()->fetch_assoc();
+// Den spezifischen Post sowie den User und zusätzliche Informationen abrufen
+$post_stmt = $conn->prepare(
+    'SELECT posts.*, users.username, users.profile_pic,
+        (SELECT COUNT(*) FROM views WHERE user_id = ? AND post_id = posts.id) as view_count,
+        (SELECT COUNT(*) FROM likes WHERE post_id = posts.id) as like_count,
+        (SELECT COUNT(*) FROM likes WHERE user_id = ? AND post_id = posts.id) as user_like_count
+    FROM posts
+    JOIN users ON posts.user_id = users.id
+    WHERE posts.id = ?'
+);
+$post_stmt->bind_param('iii', $user_id, $user_id, $post_id);
+$post_stmt->execute();
+$post = $post_stmt->get_result()->fetch_assoc();
 
 if (!$post) {
     die("Post nicht gefunden.");
 }
 
+$insert_view_stmt = $conn->prepare(
+    'INSERT INTO views (user_id, post_id)
+    SELECT ?, ?
+    WHERE NOT EXISTS (
+        SELECT 1 FROM views WHERE user_id = ? AND post_id = ?
+    )'
+);
+$insert_view_stmt->bind_param('iiii', $user_id, $post_id, $user_id, $post_id);
+$insert_view_stmt->execute();
+
 // Kommentare zu diesem Post abrufen
-$comment_stmt = $conn->prepare('SELECT comments.*, users.username, users.profile_pic FROM comments JOIN users ON comments.user_id = users.id WHERE comments.post_id = ? AND comments.allowed = 1 ORDER BY comments.written_at ASC');
+$comment_stmt = $conn->prepare(
+    'SELECT comments.*, users.username, users.profile_pic
+    FROM comments
+    JOIN users ON comments.user_id = users.id
+    WHERE comments.post_id = ? AND comments.allowed = 1
+    ORDER BY comments.written_at ASC'
+);
 $comment_stmt->bind_param('i', $post_id);
 $comment_stmt->execute();
 $comments = $comment_stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
-// Anzahl der Likes für den Post abrufen
-$like_stmt = $conn->prepare('SELECT COUNT(*) as like_count FROM likes WHERE post_id = ?');
-$like_stmt->bind_param('i', $post_id);
-$like_stmt->execute();
-$like_count = $like_stmt->get_result()->fetch_assoc()['like_count'];
-
-// Prüfen, ob der Benutzer den Post bereits geliked hat
-$user_like_stmt = $conn->prepare('SELECT * FROM likes WHERE user_id = ? AND post_id = ?');
-$user_like_stmt->bind_param('ii', $user_id, $post_id);
-$user_like_stmt->execute();
-$user_has_liked = $user_like_stmt->get_result()->num_rows > 0;
-
-// Benutzerinformationen aus der Session
-$email = $_SESSION['email'];
-$name = $_SESSION['name'];
-$username = $_SESSION['username'];
-$permission_level = $_SESSION['permission_level'];
-$profile_pic = $_SESSION['profile_pic'];
-$member_since = $_SESSION['member_since'];
-$warnings = $_SESSION['warnings'];
-$primary_color = $_SESSION['primary_color'];
-$biography = $_SESSION['biography'];
-$birthday = $_SESSION['birthday'];
+$user_has_liked = ($post['user_like_count'] > 0);
+$like_count = $post['like_count'];
 ?>
 
 <!DOCTYPE html>
 <html lang="de">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -93,12 +78,10 @@ $birthday = $_SESSION['birthday'];
             background-repeat: no-repeat;
             background-size: contain;
             vertical-align: middle;
-            /* Hier hinzugefügt */
             display: inline-block;
         }
     </style>
 </head>
-
 <body>
     <div class="content">
         <div class="post">
@@ -112,7 +95,7 @@ $birthday = $_SESSION['birthday'];
             <?php endif; ?>
             <div class="content-text">
                 <h2><?php echo htmlspecialchars($post['title']); ?></h2>
-                <div class="meta">von <?php echo htmlspecialchars($post['username']); ?> am <?php echo htmlspecialchars($post['posted_at']); ?></div>
+                <div class="meta">von <?php echo htmlspecialchars($post['username']); ?> am <?php echo date('d.m.Y, H:i', strtotime($post['posted_at'])); ?></div>
                 <p><?php echo nl2br(htmlspecialchars($post['description'])); ?></p>
             </div>
             <div class="post-actions">
@@ -182,5 +165,4 @@ $birthday = $_SESSION['birthday'];
         });
     </script>
 </body>
-
 </html>
