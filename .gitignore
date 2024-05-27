@@ -1,0 +1,6 @@
+.idx/
+.vscode/
+uploads/profilePic/*
+uploads/*
+!uploads/profilePic
+!uploads
