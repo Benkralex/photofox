@@ -43,10 +43,41 @@ function generateCode()
                 $users[] = $user;
             }
         }
-        $perm = array_column($users, 'perm');
-        $perm_count = array_count_values($perm);
-        foreach ($perm_counts as $number => $count) {
-            echo "$count Benutzer mit der Berechtigung $number<br>";
+        echo '<h1>Berechtigungsüberblick</h1>';
+        $perms = array_column($users, 'perm');
+        $perm_count = array_count_values($perms);
+        $warn_limit = [
+            5 => 100,
+            6 => 50,
+            7 => 50,
+            8 => 10,
+            9 => 3,
+            10 => 1
+        ];
+        $warn_msg = [
+            5 => 'Es sind &over Benutzer über dem empfohlenen Limit.',
+            6 => 'Es sind &over Benutzer über dem empfohlenen Limit',
+            7 => 'Es sind &over Benutzer über dem empfohlenen Limit',
+            8 => 'Es sind &over Benutzer über dem empfohlenen Limit',
+            9 => 'Es sollten nicht zu viele Benutzer mit dem Berechtigungslevel 9 existieren. Zurzeit sind &over über dem empfohlenen Limit.',
+            10 => 'Es sollte nur einen Nutzer mit dem Berechtigungslevel 10 existieren'
+        ];
+        foreach ($perm_counts as $perm => $count) {
+            echo "<h1>Berechtigunglevel $perm ($count Nutzer)</h1>";
+            echo "<ul>";
+            foreach ($users as $user) {
+                if ($user['perm'] == $perm) {
+                    echo "<li>" . htmlspecialchars($user['username']) . "</li>";
+                }
+            }
+            echo "</ul>";
+            if ($count > $warn_limit[$perm]) {
+                echo str_replace(
+                    '&over',
+                    ($count - $warn_limit[$perm]),
+                    $warn_msg[$perm]
+                );
+            }
         }
     }
     if ($_GET['act'] == 'unlock') {
