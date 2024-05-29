@@ -34,6 +34,21 @@ function generateCode()
     if (!isset($_GET['act'])) {
         $_GET['act'] = "overview";
     }
+    if ($_GET['act'] == 'overview') {
+        $sql = "SELECT * FROM users";
+        $result = $conn->query($sql);
+        $users = [];
+        if ($result->num_rows > 0) {
+            while ($user = $result->fetch_assoc()) {
+                $users[] = $user;
+            }
+        }
+        $perm = array_column($users, 'perm');
+        $perm_count = array_count_values($perm);
+        foreach ($perm_counts as $number => $count) {
+            echo "$count Benutzer mit der Berechtigung $number<br>";
+        }
+    }
     if ($_GET['act'] == 'unlock') {
         $sql = "SELECT logincodes.code, logincodes.active, logincodes.created, users.username
             FROM logincodes
