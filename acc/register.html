@@ -1,122 +1,162 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
+<html lang="de">
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login Form</title>
     <link rel="stylesheet" href="./forms.css" />
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="../img/favicon/apple-touch-icon.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="../img/favicon//favicon-32x32.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="../img/favicon//favicon-16x16.png"
-    />
-  </head>
-  <body>
+    <link rel="apple-touch-icon" sizes="180x180" href="../img/favicon/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="../img/favicon/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="../img/favicon/favicon-16x16.png" />
+</head>
+<body>
     <div class="login-container">
-      <div class="heading-container">
-        <img
-          src="../img/photofox-logo.png"
-          width="30%"
-          height="30%"
-          alt="Logo"
-        />
-        <h2>Registration Photofox</h2>
-        Schon registriert? <a href="./login.html">Anmelden</a>
-      </div>
-      <form action="./register.php" method="POST" id="registrationForm">
-        <label for="name">Vollständiger Name</label>
-        <input type="text" id="name" name="name" required />
-
-        <label for="email">E-Mail</label>
-        <input type="email" id="email" name="email" required />
-
-        <label for="username">Nutzername</label>
-        <input type="text" id="username" name="username" required />
-
-        <label for="password">Passwort</label>
-        <input type="password" id="password" name="password" required />
-        <span id="passwordError" style="color: red;"></span>
-
-        <label for="code">Einmalcode</label>
-        <input
-          type="text"
-          id="code"
-          inputmode="numeric"
-          name="code"
-          pattern="[a-zA-Z0-9äöüÄÖÜß_]{3}-[a-zA-Z0-9äöüÄÖÜß_]{3}"
-          required
-        />
-        <span id="codeError" style="color: red;"></span>
-
-        <button type="submit">Registrieren</button>
-      </form>
+        <div class="heading-container">
+            <img src="../img/photofox-logo.png" width="30%" height="30%" alt="Logo" />
+            <h2>Registration Photofox</h2>
+            Schon registriert? <a href="./login.html">Anmelden</a>
+        </div>
+        <form action="./register.php" method="POST" id="registrationForm">
+            <div class="first-form" id="firstForm">
+                <label for="name">Vollständiger Name</label>
+                <input type="text" id="name" name="name" required />
+    
+                <label for="email">E-Mail</label>
+                <input type="email" id="email" name="email" required />
+    
+                <label for="username">Nutzername</label>
+                <input type="text" id="username" name="username" required />
+    
+                <label for="code">Einmalcode</label>
+                <input type="text" id="code" inputmode="numeric" name="code" pattern="[a-zA-Z0-9äöüÄÖÜß_]{3}-[a-zA-Z0-9äöüÄÖÜß_]{3}" required />
+			
+                <input class="button" type="button" id="next" value="Weiter" />
+            </div>
+    
+            <div class="second-form" id="secondForm" style="display: none;">
+                <label for="password">Passwort</label>
+                <input type="password" id="password" name="password" required />
+				<span id="passwordError"></span>
+        
+                <button class="button" type="submit">Registrieren</button>
+            </div>
+        </form>
     </div>
     <script>
-        document.getElementById('registrationForm').addEventListener('submit', function(event) {
-            const passwordInput = document.getElementById('password');
-            const passwordError = document.getElementById('passwordError');
+        document.getElementById("next").addEventListener("click", function () {
+            var name = document.getElementById("name");
+            var email = document.getElementById("email");
+            var username = document.getElementById("username");
+            var code = document.getElementById("code");
 
-            if (!passwordInput.validity.valid) {
-                passwordInput.setCustomValidity(getPassReq()[1]);
-                passwordError.textContent = passwordInput.validationMessage;
-                event.preventDefault();
+            // Überprüfe die Validität der Felder und setze benutzerdefinierte Fehlermeldungen, falls nötig
+            if (!name.validity.valid) {
+                name.reportValidity();
             } else {
-                passwordInput.setCustomValidity("");
-                passwordError.textContent = "";
+                name.setCustomValidity("");
+                if (!email.validity.valid) {
+                    email.reportValidity();
+                } else {
+                    email.setCustomValidity("");
+                    if (!username.validity.valid) {
+                        username.reportValidity();
+                    } else {
+                        username.setCustomValidity("");
+                        if (!code.validity.valid) {
+                            document.getElementById("codeError").textContent = code.validationMessage;
+                            code.reportValidity();
+                        } else {
+                            code.setCustomValidity("");
+                            document.getElementById("firstForm").style.display = "none";
+                            document.getElementById("secondForm").style.display = "block";
+                        }
+                    }
+                }
             }
         });
 
-        // Überwachung der Eingabe für dynamische Fehleraktualisierung
-        document.getElementById('password').addEventListener('input', function() {
-            const passwordInput = document.getElementById('password');
-            const passwordError = document.getElementById('passwordError');
+        async function readConfigValue(key) {
+    // Pfad zur config.json-Datei
+    var configFile = '../configs/security-config.json';
 
-            if (passwordInput.validity.valid) {
-                passwordInput.setCustomValidity("");
-                passwordError.textContent = "";
-            } else {
-                passwordError.textContent = passwordInput.validationMessage;
-            }
-        });
+    try {
+        // Fetch-Anfrage an die Konfigurationsdatei senden
+        var response = await fetch(configFile);
 
-      async function getPassReq() {
-        const file = '../configs/security-config.json';
-        const key = 'pass-requirements';
-
-        try {
-          const response = await fetch(file);
-          const config = await response.json();
-
-          if (config.hasOwnProperty(key)) {
-            return config[key];
-          } else {
-            const value = [
-              "(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=.{8,})", 
-              "Mindestens 8 Zeichen, mit mindestens einem Großbuchstaben, einem Kleinbuchstaben, einer Zahl und einem Sonderzeichen"
-            ];
-            return value;
-          }
-        } catch (error) {
-          console.error('Error loading config:', error);
-          return [
-              "(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=.{8,})", 
-              "Mindestens 8 Zeichen, mit mindestens einem Großbuchstaben, einem Kleinbuchstaben, einer Zahl und einem Sonderzeichen"
-          ];
+        // Überprüfen, ob die Antwort erfolgreich war
+        if (!response.ok) {
+            throw new Error('Fehler beim Laden der Konfigurationsdatei');
         }
-      }
-      document.getElementById('password').pattern = await getPassReq()[0];
-      </script>
-  </body>
+
+        // Die Antwort als JSON interpretieren
+        var config = await response.json();
+
+        // Den Wert für den angegebenen Schlüssel abrufen und zurückgeben
+        if (key in config) {
+            return config[key];
+        } else {
+            throw new Error('Schlüssel nicht gefunden');
+        }
+    } catch (error) {
+        // Bei einem Fehler eine Ausnahme werfen
+        throw error;
+    }
+}
+
+var requierdConditions = [];
+readConfigValue("pass-requirements")
+    .then(function(value) {
+      requierdConditions = value;
+    });
+
+
+        document.getElementById("password").addEventListener("input", function () {
+            var passwordInput = document.getElementById("password");
+            var passwordError = document.getElementById("passwordError");
+
+			      var conditions = {
+                "BigBetter": /[A-Z]/.test(passwordInput.value),
+                "SmallLetter": /[a-z]/.test(passwordInput.value),
+                "Number": /\d/.test(passwordInput.value),
+                "SpecialCharacter": /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(passwordInput.value),
+                "MinLength": passwordInput.value.length >= 8
+            };
+
+            var missingConditions = [];
+
+            if (!conditions.BigBetter) {
+                missingConditions.push("Großbuchstabe");
+            }
+
+            if (!conditions.SmallLetter) {
+                missingConditions.push("Kleinbuchstabe");
+            }
+
+            if (!conditions.Number) {
+                missingConditions.push("Zahl");
+            }
+
+            if (!conditions.SpecialCharacter) {
+                missingConditions.push("Sonderzeichen");
+            }
+
+            if (!conditions.MinLength) {
+                missingConditions.push("Mindestens 8 Zeichen");
+            }
+
+            if (missingConditions.length > 0) {
+                var errorMessage = "Noch zu erfüllende Bedingungen:";
+                errorMessage += "<ul>";
+                for (var i = 0; i < missingConditions.length; i++) {
+                    errorMessage += "<li>" + missingConditions[i] + "</li>";
+                }
+                errorMessage += "</ul>";
+
+                passwordError.innerHTML = errorMessage;
+            } else {
+                passwordError.innerHTML = "";
+            }
+        });
+    </script>
+</body>
 </html>

@@ -7,8 +7,12 @@
         "9": [3, "Es sollten nicht zu viele Benutzer mit dem Berechtigungslevel 9 existieren. Zurzeit sind &over über dem empfohlenen Limit."],
         "10": [1, "Es sollte nur einen Nutzer mit dem Berechtigungslevel 10 existieren"]
     },
-    "pass-requirements": [
-        "(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=.{8,})", 
-        "Mindestens 8 Zeichen, mit mindestens einem Großbuchstaben, einem Kleinbuchstaben, einer Zahl und einem Sonderzeichen"
-    ]
+    "pass-requirements":
+        {
+            "BigBetter": true,
+            "SmallLetter": true,
+            "Number": true,
+            "specialCharacter": true,
+            "minLength": 8
+        }
 }

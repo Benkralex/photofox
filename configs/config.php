@@ -94,8 +94,11 @@ function getPassReq()
         return $config[$key];
     } else {
         $value = [
-            "(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=.{8,})", 
-            "Mindestens 8 Zeichen, mit mindestens einem Großbuchstaben, einem Kleinbuchstaben, einer Zahl und einem Sonderzeichen"
+            "BigBetter" => true,
+            "SmallLetter" => true,
+            "Number" => true,
+            "specialCharacter" => true,
+            "minLength" => 8
         ];
         addConfigKey($file, $key, $value);
         return $value;
