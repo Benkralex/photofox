@@ -14,12 +14,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $sql = "SELECT * FROM users WHERE username = '" . $username . "';";
     $result = $conn->query($sql);
 
-    // Fetch the user data
     if ($result->num_rows > 0) {
-        // output data of each row
         while ($user = $result->fetch_assoc()) {
-            if ($password == $user['password']) {
-                // Store user information in session or perform other login actions
+            if (password_verify($password, $user['password'])) {
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['email'] = $user['email'];
                 $_SESSION['name'] = $user['name'];
