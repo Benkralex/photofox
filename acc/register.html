@@ -36,47 +36,15 @@
             <div class="second-form" id="secondForm" style="display: none;">
                 <label for="password">Passwort</label>
                 <input type="password" id="password" name="password" required />
-				<span id="passwordError">Test</span>
+				<span id="passwordError"></span>
         
                 <button class="button" type="submit">Registrieren</button>
             </div>
         </form>
     </div>
     <script>
-        document.getElementById("next").addEventListener("click", function () {
-            var name = document.getElementById("name");
-            var email = document.getElementById("email");
-            var username = document.getElementById("username");
-            var code = document.getElementById("code");
-
-            // Überprüfe die Validität der Felder und setze benutzerdefinierte Fehlermeldungen, falls nötig
-            if (!name.validity.valid) {
-                name.reportValidity();
-            } else {
-                name.setCustomValidity("");
-                if (!email.validity.valid) {
-                    email.reportValidity();
-                } else {
-                    email.setCustomValidity("");
-                    if (!username.validity.valid) {
-                        username.reportValidity();
-                    } else {
-                        username.setCustomValidity("");
-                        if (!code.validity.valid) {
-                            document.getElementById("codeError").textContent = code.validationMessage;
-                            code.reportValidity();
-                        } else {
-                            code.setCustomValidity("");
-                            document.getElementById("firstForm").style.display = "none";
-                            document.getElementById("secondForm").style.display = "block";
-                        }
-                    }
-                }
-            }
-        });
-
-        async function getPassReq() {
-		    const file = './security-config.json';
+		 async function getPassReq() {
+		    const file = '../configs/security-config.json';
 		    const key = 'pass-requirements';
 		
 		    try {
@@ -106,61 +74,93 @@
 			        };
 		    }
 		}
-
-        document.getElementById("password").addEventListener("input", function () {
-			getPasswordRequirements().then(function(passRequirements) {
-			    var requierdConditions = passRequirements;
-				alert(requierdConditions);
-			}).catch(function(error) {
-				alert('Fehler:' + error.message);
-			    console.error('Fehler:', error.message);
-			});
-			
+		
+		function checkPass() {			
             var passwordInput = document.getElementById("password");
             var passwordError = document.getElementById("passwordError");
+			
+			getPassReq().then(function(passRequirements) {
+			    var requierdConditions = passRequirements;
+				var conditions = {
+	                "CapitalLetter": /[A-Z]/.test(passwordInput.value),
+	                "SmallLetter": /[a-z]/.test(passwordInput.value),
+	                "Number": /\d/.test(passwordInput.value),
+	                "SpecialCharacter": /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(passwordInput.value),
+	                "MinLength": passwordInput.value.length >= requierdConditions["MinLength"]
+	            };
+	
+	            var missingConditions = [];
+	
+	            if (!conditions.CapitalLetter && requierdConditions["CapitalLetter"]) {
+	                missingConditions.push("Großbuchstabe");
+	            }
+	
+	            if (!conditions.SmallLetter && requierdConditions["SmallLetter"]) {
+	                missingConditions.push("Kleinbuchstabe");
+	            }
+	
+	            if (!conditions.Number && requierdConditions["Number"]) {
+	                missingConditions.push("Zahl");
+	            }
+	
+	            if (!conditions.SpecialCharacter && requierdConditions["SpecialCharacter"]) {
+	                missingConditions.push("Sonderzeichen");
+	            }
+	
+	            if (!conditions.MinLength && !(requierdConditions["MinLength"] == 0)) {
+	                missingConditions.push("Mindestens " + requierdConditions["MinLength"].toString() + " Zeichen");
+	            }
+	            if (missingConditions.length > 0) {
+	                var errorMessage = "Bedingungen:";
+	                errorMessage += "<ul>";
+	                for (var i = 0; i < missingConditions.length; i++) {
+	                    errorMessage += "<li>" + missingConditions[i] + "</li>";
+	                }
+	                errorMessage += "</ul>";
+	
+	                passwordError.innerHTML = errorMessage;
+	            } else {
+	                passwordError.innerHTML = "<ul><li>Gutes Passwort!</li></ul>";
+	            }
+			}).catch(function(error) {
+			    console.error('Fehler:', error.message);
+				passwordError.innerHTML += error.message + "<br>";
+			});
+		}
+		
+        document.getElementById("next").addEventListener("click", function () {
+            var name = document.getElementById("name");
+            var email = document.getElementById("email");
+            var username = document.getElementById("username");
+            var code = document.getElementById("code");
 
-			      var conditions = {
-                "CapitalLetter": /[A-Z]/.test(passwordInput.value),
-                "SmallLetter": /[a-z]/.test(passwordInput.value),
-                "Number": /\d/.test(passwordInput.value),
-                "SpecialCharacter": /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(passwordInput.value),
-                "MinLength": passwordInput.value.length >= requierdConditions["MinLength"]
-            };
-
-            var missingConditions = [];
-
-            if (!conditions.CapitalLetter || !requierdConditions["CapitalLetter"]) {
-                missingConditions.push("Großbuchstabe");
-            }
-
-            if (!conditions.SmallLetter || !requierdConditions["SmallLetter"]) {
-                missingConditions.push("Kleinbuchstabe");
-            }
-
-            if (!conditions.Number || !requierdConditions["Number"]) {
-                missingConditions.push("Zahl");
-            }
-
-            if (!conditions.SpecialCharacter || !requierdConditions["SpecialCharacter"]) {
-                missingConditions.push("Sonderzeichen");
-            }
-
-            if (!conditions.MinLength || (requierdConditions["MinLength"] == 0)) {
-                missingConditions.push("Mindestens " + requierdConditions["MinLength"].toString() + " Zeichen");
-            }
-			passwordError.innerHTML += missingConditions;
-            if (missingConditions.length > 0) {
-                var errorMessage = "Noch zu erfüllende Bedingungen:";
-                errorMessage += "<ul>";
-                for (var i = 0; i < missingConditions.length; i++) {
-                    errorMessage += "<li>" + missingConditions[i] + "</li>";
-                }
-                errorMessage += "</ul>";
-
-                passwordError.innerHTML = errorMessage;
+            if (!name.validity.valid) {
+                name.reportValidity();
             } else {
-                passwordError.innerHTML = "";
+                name.setCustomValidity("");
+                if (!email.validity.valid) {
+                    email.reportValidity();
+                } else {
+                    email.setCustomValidity("");
+                    if (!username.validity.valid) {
+                        username.reportValidity();
+                    } else {
+                        username.setCustomValidity("");
+                        if (!code.validity.valid) {
+                            document.getElementById("codeError").textContent = code.validationMessage;
+                            code.reportValidity();
+                        } else {
+                            code.setCustomValidity("");
+                            document.getElementById("firstForm").style.display = "none";
+                            document.getElementById("secondForm").style.display = "block";
+							checkPass();
+                        }
+                    }
+                }
             }
+        });
+        document.getElementById("password").addEventListener("input", function () {
+			checkPass();
         });
     </script>
 </body>

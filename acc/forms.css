@@ -14,6 +14,7 @@ body {
   padding: 60px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  min-height: 400px;
 }
 .login-container .heading-container {
   margin-right: 30px;
@@ -32,7 +33,7 @@ body {
   border: 1px solid #ccc;
   border-radius: 4px;
 }
-.login-container button {
+.login-container .button {
   width: 100%;
   padding: 10px;
   background-color: #007bff;
@@ -41,7 +42,7 @@ body {
   border-radius: 4px;
   cursor: pointer;
 }
-.login-container button:hover {
+.login-container .button:hover {
   background-color: #0056b3;
 }
 .login-container a {
@@ -52,4 +53,7 @@ body {
 }
 .heading-container img {
   margin-left: 25%;
+}
+#passwordError {
+	margin-bottom: 10px;
 }
