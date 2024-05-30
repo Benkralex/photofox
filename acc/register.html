@@ -35,7 +35,7 @@
         <h2>Registration Photofox</h2>
         Schon registriert? <a href="./login.html">Anmelden</a>
       </div>
-      <form action="./register.php" method="POST">
+      <form action="./register.php" method="POST" id="registrationForm">
         <label for="name">Vollständiger Name</label>
         <input type="text" id="name" name="name" required />
 
@@ -47,6 +47,7 @@
 
         <label for="password">Passwort</label>
         <input type="password" id="password" name="password" required />
+        <span id="passwordError" style="color: red;"></span>
 
         <label for="code">Einmalcode</label>
         <input
@@ -57,9 +58,65 @@
           pattern="[a-zA-Z0-9äöüÄÖÜß_]{3}-[a-zA-Z0-9äöüÄÖÜß_]{3}"
           required
         />
+        <span id="codeError" style="color: red;"></span>
 
         <button type="submit">Registrieren</button>
       </form>
     </div>
+    <script>
+        document.getElementById('registrationForm').addEventListener('submit', function(event) {
+            const passwordInput = document.getElementById('password');
+            const passwordError = document.getElementById('passwordError');
+
+            if (!passwordInput.validity.valid) {
+                passwordInput.setCustomValidity(getPassReq()[1]);
+                passwordError.textContent = passwordInput.validationMessage;
+                event.preventDefault();
+            } else {
+                passwordInput.setCustomValidity("");
+                passwordError.textContent = "";
+            }
+        });
+
+        // Überwachung der Eingabe für dynamische Fehleraktualisierung
+        document.getElementById('password').addEventListener('input', function() {
+            const passwordInput = document.getElementById('password');
+            const passwordError = document.getElementById('passwordError');
+
+            if (passwordInput.validity.valid) {
+                passwordInput.setCustomValidity("");
+                passwordError.textContent = "";
+            } else {
+                passwordError.textContent = passwordInput.validationMessage;
+            }
+        });
+
+      async function getPassReq() {
+        const file = '../configs/security-config.json';
+        const key = 'pass-requirements';
+
+        try {
+          const response = await fetch(file);
+          const config = await response.json();
+
+          if (config.hasOwnProperty(key)) {
+            return config[key];
+          } else {
+            const value = [
+              "(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=.{8,})", 
+              "Mindestens 8 Zeichen, mit mindestens einem Großbuchstaben, einem Kleinbuchstaben, einer Zahl und einem Sonderzeichen"
+            ];
+            return value;
+          }
+        } catch (error) {
+          console.error('Error loading config:', error);
+          return [
+              "(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=.{8,})", 
+              "Mindestens 8 Zeichen, mit mindestens einem Großbuchstaben, einem Kleinbuchstaben, einer Zahl und einem Sonderzeichen"
+          ];
+        }
+      }
+      document.getElementById('password').pattern = await getPassReq()[0];
+      </script>
   </body>
 </html>

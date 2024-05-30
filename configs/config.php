@@ -85,3 +85,39 @@ function getProfilePDir()
         return $value;
     }
 }
+function getPassReq()
+{
+    $file = __DIR__ . '/security-config.json';
+    $config = getConfig($file);
+    $key = 'pass-requirements';
+    if (isset($config[$key])) {
+        return $config[$key];
+    } else {
+        $value = [
+            "(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=.{8,})", 
+            "Mindestens 8 Zeichen, mit mindestens einem Großbuchstaben, einem Kleinbuchstaben, einer Zahl und einem Sonderzeichen"
+        ];
+        addConfigKey($file, $key, $value);
+        return $value;
+    }
+}
+function getPermTrigger()
+{
+    $file = __DIR__ . '/security-config.json';
+    $config = getConfig($file);
+    $key = 'perm-trigger';
+    if (isset($config[$key])) {
+        return $config[$key];
+    } else {
+        $value = [
+            "5" => [100, "Es sind &over Benutzer über dem empfohlenen Limit."],
+            "6" => [50, "Es sind &over Benutzer über dem empfohlenen Limit."],
+            "7" => [50, "Es sind &over Benutzer über dem empfohlenen Limit."],
+            "8" => [10, "Es sind &over Benutzer über dem empfohlenen Limit."],
+            "9" => [3, "Es sollten nicht zu viele Benutzer mit dem Berechtigungslevel 9 existieren. Zurzeit sind &over über dem empfohlenen Limit."],
+            "10" => [1, "Es sollte nur einen Nutzer mit dem Berechtigungslevel 10 existieren"]
+        ];
+        addConfigKey($file, $key, $value);
+        return $value;
+    }
+}

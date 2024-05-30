@@ -46,22 +46,7 @@ function generateCode()
         echo '<h1>Berechtigungsüberblick</h1>';
         $perms = array_column($users, 'perm');
         $perm_count = array_count_values($perms);
-        $warn_limit = [
-            5 => 100,
-            6 => 50,
-            7 => 50,
-            8 => 10,
-            9 => 3,
-            10 => 1
-        ];
-        $warn_msg = [
-            5 => 'Es sind &over Benutzer über dem empfohlenen Limit.',
-            6 => 'Es sind &over Benutzer über dem empfohlenen Limit',
-            7 => 'Es sind &over Benutzer über dem empfohlenen Limit',
-            8 => 'Es sind &over Benutzer über dem empfohlenen Limit',
-            9 => 'Es sollten nicht zu viele Benutzer mit dem Berechtigungslevel 9 existieren. Zurzeit sind &over über dem empfohlenen Limit.',
-            10 => 'Es sollte nur einen Nutzer mit dem Berechtigungslevel 10 existieren'
-        ];
+        $permTrigger = getPermTrigger();
         foreach ($perm_counts as $perm => $count) {
             echo "<h1>Berechtigunglevel $perm ($count Nutzer)</h1>";
             echo "<ul>";
@@ -71,11 +56,11 @@ function generateCode()
                 }
             }
             echo "</ul>";
-            if ($count > $warn_limit[$perm]) {
+            if ($count > $permTrigger[$perm][0]) {
                 echo str_replace(
                     '&over',
                     ($count - $warn_limit[$perm]),
-                    $warn_msg[$perm]
+                    $permTrigger[$perm][1]
                 );
             }
         }
