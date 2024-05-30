@@ -9,10 +9,10 @@
     },
     "pass-requirements":
         {
-            "BigBetter": true,
+            "CapitalLetter": true,
             "SmallLetter": true,
             "Number": true,
-            "specialCharacter": true,
-            "minLength": 8
+            "SpecialCharacter": true,
+            "MinLength": 8
         }
 }

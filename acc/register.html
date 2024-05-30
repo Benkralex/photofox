@@ -36,7 +36,7 @@
             <div class="second-form" id="secondForm" style="display: none;">
                 <label for="password">Passwort</label>
                 <input type="password" id="password" name="password" required />
-				<span id="passwordError"></span>
+				<span id="passwordError">Test</span>
         
                 <button class="button" type="submit">Registrieren</button>
             </div>
@@ -75,75 +75,80 @@
             }
         });
 
-        async function readConfigValue(key) {
-    // Pfad zur config.json-Datei
-    var configFile = '../configs/security-config.json';
-
-    try {
-        // Fetch-Anfrage an die Konfigurationsdatei senden
-        var response = await fetch(configFile);
-
-        // Überprüfen, ob die Antwort erfolgreich war
-        if (!response.ok) {
-            throw new Error('Fehler beim Laden der Konfigurationsdatei');
-        }
-
-        // Die Antwort als JSON interpretieren
-        var config = await response.json();
-
-        // Den Wert für den angegebenen Schlüssel abrufen und zurückgeben
-        if (key in config) {
-            return config[key];
-        } else {
-            throw new Error('Schlüssel nicht gefunden');
-        }
-    } catch (error) {
-        // Bei einem Fehler eine Ausnahme werfen
-        throw error;
-    }
-}
-
-var requierdConditions = [];
-readConfigValue("pass-requirements")
-    .then(function(value) {
-      requierdConditions = value;
-    });
-
+        async function getPassReq() {
+		    const file = './security-config.json';
+		    const key = 'pass-requirements';
+		
+		    try {
+		        const response = await fetch(file);
+		        const config = await response.json();
+		
+		        if (config.hasOwnProperty(key)) {
+		            return config[key];
+		        } else {
+		            const value = {
+			            "CapitalLetter": true,
+			            "SmallLetter": true,
+			            "Number": true,
+			            "SpecialCharacter": true,
+			            "MinLength": 8
+			        };
+		            return value;
+		        }
+		    } catch (error) {
+		        console.error('Error loading config:', error);
+		        return {
+			            "CapitalLetter": true,
+			            "SmallLetter": true,
+			            "Number": true,
+			            "SpecialCharacter": true,
+			            "MinLength": 8
+			        };
+		    }
+		}
 
         document.getElementById("password").addEventListener("input", function () {
+			getPasswordRequirements().then(function(passRequirements) {
+			    var requierdConditions = passRequirements;
+				alert(requierdConditions);
+			}).catch(function(error) {
+				alert('Fehler:' + error.message);
+			    console.error('Fehler:', error.message);
+			});
+			
             var passwordInput = document.getElementById("password");
             var passwordError = document.getElementById("passwordError");
 
 			      var conditions = {
-                "BigBetter": /[A-Z]/.test(passwordInput.value),
+                "CapitalLetter": /[A-Z]/.test(passwordInput.value),
                 "SmallLetter": /[a-z]/.test(passwordInput.value),
                 "Number": /\d/.test(passwordInput.value),
                 "SpecialCharacter": /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(passwordInput.value),
-                "MinLength": passwordInput.value.length >= 8
+                "MinLength": passwordInput.value.length >= requierdConditions["MinLength"]
             };
 
             var missingConditions = [];
 
-            if (!conditions.BigBetter) {
+            if (!conditions.CapitalLetter || !requierdConditions["CapitalLetter"]) {
                 missingConditions.push("Großbuchstabe");
             }
 
-            if (!conditions.SmallLetter) {
+            if (!conditions.SmallLetter || !requierdConditions["SmallLetter"]) {
                 missingConditions.push("Kleinbuchstabe");
             }
 
-            if (!conditions.Number) {
+            if (!conditions.Number || !requierdConditions["Number"]) {
                 missingConditions.push("Zahl");
             }
 
-            if (!conditions.SpecialCharacter) {
+            if (!conditions.SpecialCharacter || !requierdConditions["SpecialCharacter"]) {
                 missingConditions.push("Sonderzeichen");
             }
 
-            if (!conditions.MinLength) {
-                missingConditions.push("Mindestens 8 Zeichen");
+            if (!conditions.MinLength || (requierdConditions["MinLength"] == 0)) {
+                missingConditions.push("Mindestens " + requierdConditions["MinLength"].toString() + " Zeichen");
             }
-
+			passwordError.innerHTML += missingConditions;
             if (missingConditions.length > 0) {
                 var errorMessage = "Noch zu erfüllende Bedingungen:";
                 errorMessage += "<ul>";

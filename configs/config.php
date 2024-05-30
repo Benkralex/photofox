@@ -94,11 +94,11 @@ function getPassReq()
         return $config[$key];
     } else {
         $value = [
-            "BigBetter" => true,
+            "CapitalLetter" => true,
             "SmallLetter" => true,
             "Number" => true,
-            "specialCharacter" => true,
-            "minLength" => 8
+            "SpecialCharacter" => true,
+            "MinLength" => 8
         ];
         addConfigKey($file, $key, $value);
         return $value;
