@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Klone das Git-Repository in einen temporären Ordner
-git clone https://github.com/Benkram/photofox /tmp/repo
+git clone https://github.com/Benkralex/photofox /tmp/repo
 
 # Erstelle das Zielverzeichnis, falls es nicht existiert
 mkdir -p ./web
@@ -10,7 +10,6 @@ mkdir -p ./web
 cp -r /tmp/repo/code/* ./web/
 
 # Kopiere die Konfigurationsdateien in das 'configs'-Verzeichnis im Web-Verzeichnis
-mkdir -p ./web/configs
 cp -r ./configs/* ./web/configs/
 
 # Warte, bis die Datenbank bereit ist
@@ -23,7 +22,7 @@ done
 docker exec web php /var/www/html/configs/updateSQL.php
 
 # Führe die SQL-Datei auf dem MySQL-Server aus, um die Datenbank zu erstellen
-docker exec -i db mysql -uroot -prootpass < ./web/configs/photofoxDB.sql
+docker exec -i db mysql -u root -p rootpass < ./web/configs/photofoxDB.sql
 
 # Aufräumen des temporären Repository-Ordners
 rm -rf /tmp/repo

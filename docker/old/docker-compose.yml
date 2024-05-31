@@ -1,11 +1,8 @@
 version: '3.8'
 
-volumes:
-  db_data:
-
 services:
   web:
-    build: ./webserver/
+    image: php:7.4-apache
     container_name: web
     volumes:
       - ./web:/var/www/html
@@ -18,6 +15,9 @@ services:
     image: mysql:5.7
     container_name: db
     environment:
-      MYSQL_ROOT_PASSWORD: K(l9h1j-Zmn!f$k
+      MYSQL_ROOT_PASSWORD: rootpass
     volumes:
       - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
