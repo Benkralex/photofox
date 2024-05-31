@@ -72,6 +72,14 @@ function getVideoDir()
         return $value;
     }
 }
+function getPostSrc($type, $src) {
+    if ($type == 'image') {
+        echo '<img src="../' . getImgDir() . htmlspecialchars($src).'">';
+    } elseif ($type == 'video') {
+        echo '<video controls>
+            <source src="../'.getVideoDir() . htmlspecialchars($src).'" type="video/mp4">Your browser does not support the video tag.</video>';
+    }
+}
 function getProfilePDir()
 {
     $file = __DIR__ . '/upload.json';

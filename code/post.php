@@ -86,10 +86,10 @@ $like_count = $post['like_count'];
     <div class="content">
         <div class="post">
             <?php if ($post['type'] == 'image') : ?>
-                <img src="<?php echo './uploads/' . htmlspecialchars($post['src']); ?>" alt="<?php echo htmlspecialchars($post['title']); ?>">
+                <img src="<?php echo getImgDir() . htmlspecialchars($post['src']); ?>" alt="<?php echo htmlspecialchars($post['title']); ?>">
             <?php elseif ($post['type'] == 'video') : ?>
                 <video controls>
-                    <source src="<?php echo './uploads/' . htmlspecialchars($post['src']); ?>" type="video/mp4">
+                    <source src="<?php echo getVideoDir() . htmlspecialchars($post['src']); ?>" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
             <?php endif; ?>
