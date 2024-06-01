@@ -72,6 +72,14 @@ function getVideoDir()
         return $value;
     }
 }
+function getPostSrc($type, $src) {
+    if ($type == 'image') {
+        echo '<img src="../' . getImgDir() . htmlspecialchars($src).'">';
+    } elseif ($type == 'video') {
+        echo '<video controls>
+            <source src="../'.getVideoDir() . htmlspecialchars($src).'" type="video/mp4">Your browser does not support the video tag.</video>';
+    }
+}
 function getProfilePDir()
 {
     $file = __DIR__ . '/upload.json';
@@ -81,6 +89,45 @@ function getProfilePDir()
         return $config[$key];
     } else {
         $value = './uploads/profilePic/';
+        addConfigKey($file, $key, $value);
+        return $value;
+    }
+}
+function getPassReq()
+{
+    $file = __DIR__ . '/security-config.json';
+    $config = getConfig($file);
+    $key = 'pass-requirements';
+    if (isset($config[$key])) {
+        return $config[$key];
+    } else {
+        $value = [
+            "CapitalLetter" => true,
+            "SmallLetter" => true,
+            "Number" => true,
+            "SpecialCharacter" => true,
+            "MinLength" => 8
+        ];
+        addConfigKey($file, $key, $value);
+        return $value;
+    }
+}
+function getPermTrigger()
+{
+    $file = __DIR__ . '/security-config.json';
+    $config = getConfig($file);
+    $key = 'perm-trigger';
+    if (isset($config[$key])) {
+        return $config[$key];
+    } else {
+        $value = [
+            "5" => [100, "Es sind &over Benutzer über dem empfohlenen Limit."],
+            "6" => [50, "Es sind &over Benutzer über dem empfohlenen Limit."],
+            "7" => [50, "Es sind &over Benutzer über dem empfohlenen Limit."],
+            "8" => [10, "Es sind &over Benutzer über dem empfohlenen Limit."],
+            "9" => [3, "Es sollten nicht zu viele Benutzer mit dem Berechtigungslevel 9 existieren. Zurzeit sind &over über dem empfohlenen Limit."],
+            "10" => [1, "Es sollte nur einen Nutzer mit dem Berechtigungslevel 10 existieren"]
+        ];
         addConfigKey($file, $key, $value);
         return $value;
     }

@@ -34,7 +34,12 @@ function generateCode()
     if (!isset($_GET['act'])) {
         $_GET['act'] = "overview";
     }
+    if ($_GET['act'] == 'overview') {
+        echo '<h1>Übersicht</h1>';
+    }
     if ($_GET['act'] == 'unlock') {
+        echo '<h1>Freigabe</h1>';
+        echo '<h2>Login-Codes</h2>';
         $sql = "SELECT logincodes.code, logincodes.active, logincodes.created, users.username
             FROM logincodes
             INNER JOIN users ON logincodes.user_id = users.id
@@ -61,6 +66,38 @@ function generateCode()
             echo '<form method="POST" action="./user.php?act=unlock">
         <button class="btn btn-outline my-2 my-sm-0" type="submit" name="new_code" id="new_code">Neuer Code</button>
     </form>';
+        }
+    }
+    if ($_GET['act'] == 'secuirty') {
+        echo '<h1>Sicherheit</h1>';
+        $sql = "SELECT * FROM users";
+        $result = $conn->query($sql);
+        $users = [];
+        if ($result->num_rows > 0) {
+            while ($user = $result->fetch_assoc()) {
+                $users[] = $user;
+            }
+        }
+        echo '<h2>Berechtigungen</h2>';
+        $perms = array_column($users, 'perm');
+        $perm_count = array_count_values($perms);
+        $permTrigger = getPermTrigger();
+        foreach ($perm_counts as $perm => $count) {
+            echo "<h1>Berechtigunglevel $perm ($count Nutzer)</h1>";
+            echo "<ul>";
+            foreach ($users as $user) {
+                if ($user['perm'] == $perm) {
+                    echo "<li>" . htmlspecialchars($user['username']) . "</li>";
+                }
+            }
+            echo "</ul>";
+            if ($count > $permTrigger[$perm][0]) {
+                echo str_replace(
+                    '&over',
+                    ($count - $warn_limit[$perm]),
+                    $permTrigger[$perm][1]
+                );
+            }
         }
     }
     if (isset($_POST['new_code'])) {

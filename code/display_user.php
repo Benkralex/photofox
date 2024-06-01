@@ -10,7 +10,10 @@ if ($_SERVER["REQUEST_METHOD"] != "GET" || !isset($_GET['user'])) {
 }
 
 $user = $_GET['user'];
-$query = "SELECT * FROM users WHERE username = ?";
+$query = "SELECT u.*, 
+(SELECT COUNT(*) FROM followers WHERE followed_id = u.id) AS follower_count, 
+(SELECT COUNT(*) FROM posts WHERE user_id = u.id) AS posts_quantity
+FROM users u WHERE username = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("s", $user);
 $stmt->execute();
@@ -25,13 +28,6 @@ if ($result->num_rows > 0) {
     $b = hexdec(substr($bgColor, 5, 2));
     $bgBrightness = (($r * 299) + ($g * 587) + ($b * 114)) / 1000;
     $textColor = $bgBrightness > 125 ? '#000' : '#fff';
-
-    // Anzahl der Follower abrufen
-    $follower_stmt = $conn->prepare('SELECT COUNT(*) as follower_count FROM followers WHERE followed_id = ?');
-    $follower_stmt->bind_param('i', $userData['id']);
-    $follower_stmt->execute();
-    $follower_result = $follower_stmt->get_result()->fetch_assoc();
-    $follower_count = $follower_result['follower_count'];
 
     // Prüfen, ob der eingeloggte Benutzer dem aktuellen Benutzer folgt
     $is_following = false;
@@ -54,7 +50,7 @@ if ($result->num_rows > 0) {
         <img id="profile-pic" src="<?php echo $profilePic; ?>" alt="Profilbild" />
         <h1>@<?php echo htmlspecialchars($userData['username']); ?></h1>
         <p><?php echo htmlspecialchars($userData['biography']); ?></p>
-        <p>Beiträge: <?php echo htmlspecialchars($userData['posts_quantity']); ?> | Follower: <?php echo $follower_count; ?></p>
+        <p>Beiträge: <?php echo htmlspecialchars($userData['posts_quantity']); ?> | Follower: <?php echo $userData['follower_count']; ?></p>
         <?php if (isset($_SESSION['user_id']) && $_SESSION['user_id'] != $userData['id']) : ?>
             <form action="follow.php" method="post">
                 <input type="hidden" name="followed_id" value="<?php echo $userData['id']; ?>">
@@ -73,7 +69,12 @@ if ($result->num_rows > 0) {
         <?php
         // SQL-Abfrage für Beiträge des Benutzers
         $userId = $userData['id'];
-        $postQuery = "SELECT * FROM posts WHERE user_id = ? AND allowed = 1 ORDER BY posted_at DESC";
+        $postQuery = "SELECT p.*, 
+        (SELECT COUNT(*) as view_count FROM views WHERE post_id = p.id) AS views,
+        (SELECT COUNT(*) as like_count FROM likes WHERE post_id = p.id) AS likes
+        FROM posts p 
+        WHERE user_id = ? AND allowed = 1 
+        ORDER BY posted_at DESC";
         $post_stmt = $conn->prepare($postQuery);
         $post_stmt->bind_param('i', $userId);
         $post_stmt->execute();
@@ -82,19 +83,6 @@ if ($result->num_rows > 0) {
         // Überprüfen, ob Beiträge gefunden wurden
         if ($postResult->num_rows > 0) {
             while ($post = $postResult->fetch_assoc()) {
-                // Anzahl der Views für den Post abrufen
-                $view_stmt = $conn->prepare('SELECT COUNT(*) as view_count FROM views WHERE post_id = ?');
-                $view_stmt->bind_param('i', $post['id']);
-                $view_stmt->execute();
-                $view_result = $view_stmt->get_result()->fetch_assoc();
-                $view_count = $view_result['view_count'];
-
-                // Anzahl der Likes für den Post abrufen
-                $like_stmt = $conn->prepare('SELECT COUNT(*) as like_count FROM likes WHERE post_id = ?');
-                $like_stmt->bind_param('i', $post['id']);
-                $like_stmt->execute();
-                $like_result = $like_stmt->get_result()->fetch_assoc();
-                $like_count = $like_result['like_count'];
         ?>
                 <div class="content-box <?php echo htmlspecialchars($post['type']); ?>">
                     <a class="post-link" href="post.php?id=<?php echo $post['id']; ?>">
@@ -105,11 +93,11 @@ if ($result->num_rows > 0) {
                         </div>
                         <div class="view-post-btn">
                             <span class="material-symbols-rounded">visibility</span>
-                            <span class="views"><?php echo $view_count; ?></span>
+                            <span class="views"><?php echo $post['views']; ?></span>
                         </div>
                         <div class="like-post-btn">
                             <span class="material-symbols-rounded">thumb_up</span>
-                            <span class="likes"><?php echo $like_count; ?></span>
+                            <span class="likes"><?php echo $post['likes']; ?></span>
                         </div>
                     </a>
                 </div>

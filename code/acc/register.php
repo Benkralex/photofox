@@ -13,6 +13,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'];
     $code = $_POST['code'];
 
+    if (empty($username) || empty($password) || empty($email) || empty($name) || empty($code)) {
+        header("Location: ./login.html");
+        exit();
+    }
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        header("Location: ./login.html");
+        exit();
+    }
+    if (strlen($password) < getPassReq()["MinLength"]) {
+        header("Location: ./login.html");
+        exit();
+    }
+    if (getPassReq()["CapitalLetter"]) {
+        if (!preg_match('/[A-Z]/', $password)) {
+            header("Location: ./login.html");
+            exit();
+        }
+    }
+    if (getPassReq()["SmallLetter"]) {
+        if (!preg_match('/[a-z]/', $password)) {
+            header("Location: ./login.html");
+            exit();
+        }
+    }
+    if (getPassReq()["Number"]) {
+        if (!preg_match('/\d/', $password)) {
+            header("Location: ./login.html");
+            exit();
+        }
+    }
+    if (getPassReq()["SpecialCharacter"]) {
+        if (!preg_match('/[!@#$%^&*()_+\-=\[\]{};\':"\\|,.<>\/?]/', $password)) {
+            header("Location: ./login.html");
+            exit();
+        }
+    }
+    $password = password_hash($password, PASSWORD_DEFAULT, array('cost' => 9));
 
     // SQL-Abfrage zum Prüfen, ob der Code aktiv und unbenutzt ist
     $sql = "SELECT active, used FROM logincodes WHERE code = ?";
