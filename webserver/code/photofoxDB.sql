@@ -1,9 +1,10 @@
+
 CREATE DATABASE IF NOT EXISTS `photofox`;
 
 USE `photofox`;
 
-CREATE USER IF NOT EXISTS 'photofoxDBuser'@'localhost' IDENTIFIED BY '#!2024passw0rdDB';
-GRANT ALL PRIVILEGES ON `photofox`.* TO 'photofoxDBuser'@'localhost';
+CREATE USER IF NOT EXISTS 'photofoxDBuser'@'db' IDENTIFIED BY '#!2024passw0rdDB';
+GRANT ALL PRIVILEGES ON `photofox`.* TO 'photofoxDBuser'@'db';
 FLUSH PRIVILEGES;
 
 CREATE TABLE IF NOT EXISTS users (
@@ -13,7 +14,6 @@ CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     permission_level TINYINT NOT NULL DEFAULT 0,
-    posts_quantity INT DEFAULT 0,
     profile_pic VARCHAR(255),
     member_since DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     warnings INT DEFAULT 0,

@@ -1,5 +1,5 @@
 {
-    "db_host": "localhost",
+    "db_host": "db",
     "db_name": "photofox",
     "db_user": "photofoxDBuser",
     "db_pass": "#!2024passw0rdDB"
