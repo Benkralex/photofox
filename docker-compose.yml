@@ -2,14 +2,13 @@ version: '3.8'
 
 volumes:
   db_data:
-  uploads:
 
 services:
   db:
     image: mysql:5.7
     container_name: db
     environment:
-      MYSQL_ROOT_PASSWORD: K(l9h1j-Zmn!f$k
+      MYSQL_ROOT_PASSWORD: pass
     volumes:
       - db_data:/var/lib/mysql
 
@@ -23,5 +22,5 @@ services:
     depends_on:
       - db
     environment:
-      MYSQL_ROOT_PASSWORD: K(l9h1j-Zmn!f$k
+      MYSQL_ROOT_PASSWORD: pass
     entrypoint: ["/usr/local/bin/wait-for-db.sh", "db", "/var/www/html/configs/updateSQL.php", "/var/www/html/configs/photofoxDB.sql"]

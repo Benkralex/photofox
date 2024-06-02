@@ -1,4 +1,6 @@
 <?php
+header('Location: ./');
+exit();
 $title = 'Photofox - Einstellungen';
 $currentPage = 'acc_settings';
 require_once('./nav.php');

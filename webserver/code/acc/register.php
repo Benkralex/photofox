@@ -1,8 +1,7 @@
-
 <?php
-require('../database.php');
 // Start the session to store user information if needed
 session_start();
+require('../database.php');
 
 // Check if form was submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -102,4 +101,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header("Location: ./login.html");
     exit();
 }
-?>

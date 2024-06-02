@@ -3,8 +3,8 @@ CREATE DATABASE IF NOT EXISTS `photofox`;
 
 USE `photofox`;
 
-CREATE USER IF NOT EXISTS 'photofoxDBuser'@'db' IDENTIFIED BY '#!2024passw0rdDB';
-GRANT ALL PRIVILEGES ON `photofox`.* TO 'photofoxDBuser'@'db';
+CREATE USER IF NOT EXISTS 'photofox'@'%' IDENTIFIED BY 'pass';
+GRANT ALL PRIVILEGES ON `photofox`.* TO 'photofox'@'%';
 FLUSH PRIVILEGES;
 
 CREATE TABLE IF NOT EXISTS users (

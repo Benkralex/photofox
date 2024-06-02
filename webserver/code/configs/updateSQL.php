@@ -31,8 +31,8 @@ CREATE DATABASE IF NOT EXISTS `$dbName`;
 
 USE `$dbName`;
 
-CREATE USER IF NOT EXISTS '$dbUser'@'$dbHost' IDENTIFIED BY '$dbPass';
-GRANT ALL PRIVILEGES ON `$dbName`.* TO '$dbUser'@'$dbHost';
+CREATE USER IF NOT EXISTS '$dbUser'@'%' IDENTIFIED BY '$dbPass';
+GRANT ALL PRIVILEGES ON `$dbName`.* TO '$dbUser'@'%';
 FLUSH PRIVILEGES;
 
 CREATE TABLE IF NOT EXISTS users (

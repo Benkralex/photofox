@@ -72,12 +72,13 @@ function getVideoDir()
         return $value;
     }
 }
-function getPostSrc($type, $src) {
+function getPostSrc($type, $src)
+{
     if ($type == 'image') {
-        echo '<img src="../' . getImgDir() . htmlspecialchars($src).'">';
+        echo '<img src="../' . getImgDir() . htmlspecialchars($src) . '">';
     } elseif ($type == 'video') {
         echo '<video controls>
-            <source src="../'.getVideoDir() . htmlspecialchars($src).'" type="video/mp4">Your browser does not support the video tag.</video>';
+            <source src="../' . getVideoDir() . htmlspecialchars($src) . '" type="video/mp4">Your browser does not support the video tag.</video>';
     }
 }
 function getProfilePDir()
@@ -128,6 +129,19 @@ function getPermTrigger()
             "9" => [3, "Es sollten nicht zu viele Benutzer mit dem Berechtigungslevel 9 existieren. Zurzeit sind &over über dem empfohlenen Limit."],
             "10" => [1, "Es sollte nur einen Nutzer mit dem Berechtigungslevel 10 existieren"]
         ];
+        addConfigKey($file, $key, $value);
+        return $value;
+    }
+}
+function getAdminUsername()
+{
+    $file = __DIR__ . '/server.json';
+    $config = getConfig($file);
+    $key = 'adminUsername';
+    if (isset($config[$key])) {
+        return $config[$key];
+    } else {
+        $value = "ADMIN";
         addConfigKey($file, $key, $value);
         return $value;
     }
