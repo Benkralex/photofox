@@ -146,3 +146,15 @@ function getAdminUsername()
         return $value;
     }
 }
+function getPostCooldown($key)
+{
+    $file = __DIR__ . '/post-cooldown.json';
+    $config = getConfig($file);
+    if (isset($config[$key])) {
+        return $config[$key];
+    } else {
+        $value = ($key < 6) ? 3600 : (($key > 8) ? 0 : 360);
+        addConfigKey($file, $key, $value);
+        return $value;
+    }
+}

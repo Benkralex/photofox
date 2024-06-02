@@ -1,6 +1,6 @@
 {
     "db_host": "db",
     "db_name": "photofox",
-    "db_user": "photofoxDBuser",
-    "db_pass": "pass"
+    "db_user": "photofox",
+    "db_pass": "DBpassw0rd"
 }

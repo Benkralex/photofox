@@ -22,10 +22,9 @@ if ($row['last_post_time']) {
     $last_post_time = strtotime($row['last_post_time']);
     $current_time = time();
     $time_diff = $current_time - $last_post_time;
-
-    if ($time_diff < 3600) { // 3600 Sekunden = 1 Stunde
-        $remaining_time = 3600 - $time_diff;
-        $time_message = gmdate("i", $remaining_time);
+    if ($time_diff < getPostCooldown($_SESSION['permission_level'])) { // 3600 Sekunden = 1 Stunde
+        $remaining_time = getPostCooldown($_SESSION['permission_level']) - $time_diff;
+        $time_message = gmdate("hi", $remaining_time);
         die("Du kannst erst in " . $time_message . "min wieder posten");
     } elseif ($_SESSION['permission_level'] < 4) {
         die("Du hast keine Berechtigung, Posts hochzuladen");
@@ -76,28 +75,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $targetDir = './uploads/';
     $tagetFile = $targetDir . basename($_FILES[$type]['name']);
     if (move_uploaded_file($_FILES[$type]['tmp_name'], $tagetFile)) {
-        echo 'erfolgreich hochgeladen';
+        echo 'Datei erfolgreich hochgeladen!<br>';
     } else {
         echo 'Fehler bei upload!';
     }
 
     if ($stmt->execute()) {
-        $sql_update = "UPDATE users SET posts_quantity = posts_quantity + 1 WHERE id = ?";
-
-        $stmt_update = $conn->prepare($sql_update);
-        if ($stmt_update === false) {
-            die("Error while preparing the statement: " . $conn->error);
-        }
-
-        $stmt_update->bind_param("i", $user_id);
-
-        if ($stmt_update->execute()) {
-            echo "Post created successfully!";
-        } else {
-            echo "Error updating user's post quantity: " . $conn->error;
-        }
-
-        $stmt_update->close();
+        echo "Post erfolgreich erstellt!";
     } else {
         echo "Error: " . $sql . "<br>" . $conn->error;
     }
