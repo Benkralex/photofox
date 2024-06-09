@@ -68,7 +68,7 @@ function generateCode()
     </form>';
         }
     }
-    if ($_GET['act'] == 'secuirty') {
+    if ($_GET['act'] == 'security') {
         echo '<h1>Sicherheit</h1>';
         $sql = "SELECT * FROM users";
         $result = $conn->query($sql);
@@ -79,14 +79,14 @@ function generateCode()
             }
         }
         echo '<h2>Berechtigungen</h2>';
-        $perms = array_column($users, 'perm');
+        $perms = array_column($users, 'permission_level');
         $perm_count = array_count_values($perms);
         $permTrigger = getPermTrigger();
-        foreach ($perm_counts as $perm => $count) {
-            echo "<h1>Berechtigunglevel $perm ($count Nutzer)</h1>";
+        foreach ($perm_count as $perm => $count) {
+            echo "<h3>Berechtigunglevel $perm ($count Nutzer)</h3>";
             echo "<ul>";
             foreach ($users as $user) {
-                if ($user['perm'] == $perm) {
+                if ($user['permission_level'] == $perm) {
                     echo "<li>" . htmlspecialchars($user['username']) . "</li>";
                 }
             }

@@ -12,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] != "GET" || !isset($_GET['user'])) {
 $user = $_GET['user'];
 $query = "SELECT u.*, 
 (SELECT COUNT(*) FROM followers WHERE followed_id = u.id) AS follower_count, 
-(SELECT COUNT(*) FROM posts WHERE user_id = u.id) AS posts_quantity
+(SELECT COUNT(*) FROM posts WHERE user_id = u.id AND allowed = TRUE) AS posts_quantity
 FROM users u WHERE username = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("s", $user);

@@ -27,7 +27,7 @@ $post_stmt = $conn->prepare(
         (SELECT COUNT(*) FROM likes WHERE user_id = ? AND post_id = posts.id) as user_like_count
     FROM posts
     JOIN users ON posts.user_id = users.id
-    WHERE posts.id = ?'
+    WHERE posts.id = ? AND allowed = TRUE'
 );
 $post_stmt->bind_param('iii', $user_id, $user_id, $post_id);
 $post_stmt->execute();
@@ -65,6 +65,7 @@ $like_count = $post['like_count'];
 
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -82,6 +83,7 @@ $like_count = $post['like_count'];
         }
     </style>
 </head>
+
 <body>
     <div class="content">
         <div class="post">
@@ -114,9 +116,9 @@ $like_count = $post['like_count'];
                 <?php foreach ($comments as $comment) : ?>
                     <div class="comment">
                         <div class="comment-header">
-                            <img src="<?php echo './uploads/profilePic/' . htmlspecialchars($comment['profile_pic']); ?>" alt="Profilbild" class="comment-profile-pic">
+                            <img src="<?php echo './uploads/profilePic/' . htmlspecialchars((($comment['profile_pic'] != null) && ($comment['profile_pic'] != "")) ? $comment['profile_pic'] : getDefaultProfilePic()); ?>" alt="Profilbild" class="comment-profile-pic">
                             <span class="comment-username"><?php echo htmlspecialchars($comment['username']); ?></span>
-                            <span class="comment-date"><?php echo htmlspecialchars($comment['written_at']); ?></span>
+                            <span class="comment-date"><?php echo htmlspecialchars(date('d.m.Y, H:i', strtotime($comment['written_at']))); ?></span>
                         </div>
                         <div class="comment-content">
                             <p><?php echo nl2br(htmlspecialchars($comment['content'])); ?></p>
@@ -165,4 +167,5 @@ $like_count = $post['like_count'];
         });
     </script>
 </body>
+
 </html>

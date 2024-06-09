@@ -1,38 +1,10 @@
-<?php
-// Funktion zum Laden der Konfigurationsdaten aus der JSON-Datei
-function getConfig($configFile)
-{
-    if (!file_exists($configFile)) {
-        die("Konfigurationsdatei nicht gefunden: $configFile");
-    }
 
-    $configData = file_get_contents($configFile);
-    return json_decode($configData, true);
-}
+CREATE DATABASE IF NOT EXISTS `photofox`;
 
-// Laden der Konfigurationsdaten aus 'server.json' und 'db.json'
-$serverConfig = getConfig('/home/container/conf/server.json');
-$dbConfig = getConfig('/home/container/conf/db.json');
+USE `photofox`;
 
-// Daten aus den JSON-Dateien extrahieren
-$adminName = $serverConfig['adminName'];
-$adminEmail = $serverConfig['adminEmail'];
-$adminUsername = $serverConfig['adminUsername'];
-$adminPassword = $serverConfig['adminPassword'];
-
-$dbHost = $dbConfig['db_host'];
-$dbName = $dbConfig['db_name'];
-$dbUser = $dbConfig['db_user'];
-$dbPass = $dbConfig['db_pass'];
-
-// SQL-Befehle generieren
-$sql = "
-CREATE DATABASE IF NOT EXISTS `$dbName`;
-
-USE `$dbName`;
-
-CREATE USER IF NOT EXISTS '$dbUser'@'%' IDENTIFIED BY '$dbPass';
-GRANT ALL PRIVILEGES ON `$dbName`.* TO '$dbUser'@'%';
+CREATE USER IF NOT EXISTS 'photofox'@'%' IDENTIFIED BY 'DBpassw0rd';
+GRANT ALL PRIVILEGES ON `photofox`.* TO 'photofox'@'%';
 FLUSH PRIVILEGES;
 
 CREATE TABLE IF NOT EXISTS users (
@@ -116,15 +88,9 @@ CREATE TABLE IF NOT EXISTS logincodes (
 );
 
 INSERT INTO users (email, name, username, password, permission_level) VALUES (
-    '$adminEmail',
-    '$adminName',
-    '$adminUsername',
-    '$adminPassword',
+    'admin@foxgalaxy.de',
+    'Admin',
+    'ADMIN',
+    '$2y$10$e0MYzXyjpJS2Hd/ZKiT/bOQEE5.YSU1aGB/XRCq1UtQF7vAB1D1sy!',
     10
 );
-";
-
-// SQL-Befehle in eine Datei schreiben
-file_put_contents('/home/container/conf/photofoxDB.sql', $sql);
-
-echo "SQL-Datei wurde erfolgreich generiert.";

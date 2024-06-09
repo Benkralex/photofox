@@ -1,8 +1,9 @@
 <?php
+const CONFIG_PATH = "/home/container/conf";
 function getConfig($configFile)
 {
     if (!file_exists($configFile)) {
-        die("Konfigurationsdatei nicht gefunden!");
+        die("Konfigurationsdatei \"" . $configFile . "\" nicht gefunden!");
     }
 
     $configData = file_get_contents($configFile);
@@ -25,7 +26,7 @@ function addConfigKey($configFile, $key, $value)
 }
 function getDefaultPerm()
 {
-    $file = __DIR__ . '/acc.json';
+    $file = CONFIG_PATH . '/acc.json';
     $config = getConfig($file);
     if (isset($config['default-permission'])) {
         return $config['default-permission'];
@@ -36,7 +37,7 @@ function getDefaultPerm()
 }
 function getDBConn()
 {
-    $file = __DIR__ . '/db.json';
+    $file = CONFIG_PATH . '/db.json';
     $config = getConfig($file);
     $conn = new mysqli(
         $config['db_host'],
@@ -48,7 +49,7 @@ function getDBConn()
 }
 function getImgDir()
 {
-    $file = __DIR__ . '/upload.json';
+    $file = CONFIG_PATH . '/upload.json';
     $config = getConfig($file);
     $key = 'post-image';
     if (isset($config[$key])) {
@@ -61,7 +62,7 @@ function getImgDir()
 }
 function getVideoDir()
 {
-    $file = __DIR__ . '/upload.json';
+    $file = CONFIG_PATH . '/upload.json';
     $config = getConfig($file);
     $key = 'post-video';
     if (isset($config[$key])) {
@@ -72,18 +73,31 @@ function getVideoDir()
         return $value;
     }
 }
+function getDefaultProfilePic()
+{
+    $file = CONFIG_PATH . '/upload.json';
+    $config = getConfig($file);
+    $key = 'noProfilePic-pic';
+    if (isset($config[$key])) {
+        return $config[$key];
+    } else {
+        $value = 'noProfilePic.png';
+        addConfigKey($file, $key, $value);
+        return $value;
+    }
+}
 function getPostSrc($type, $src)
 {
     if ($type == 'image') {
-        echo '<img src="../' . getImgDir() . htmlspecialchars($src) . '">';
+        echo '<img class="post-src" src="../' . getImgDir() . htmlspecialchars($src) . '">';
     } elseif ($type == 'video') {
         echo '<video controls>
-            <source src="../' . getVideoDir() . htmlspecialchars($src) . '" type="video/mp4">Your browser does not support the video tag.</video>';
+            <source class="post-src" src="../' . getVideoDir() . htmlspecialchars($src) . '" type="video/mp4">Your browser does not support the video tag.</video>';
     }
 }
 function getProfilePDir()
 {
-    $file = __DIR__ . '/upload.json';
+    $file = CONFIG_PATH . '/upload.json';
     $config = getConfig($file);
     $key = 'profile-picture';
     if (isset($config[$key])) {
@@ -96,7 +110,7 @@ function getProfilePDir()
 }
 function getPassReq()
 {
-    $file = __DIR__ . '/security-config.json';
+    $file = CONFIG_PATH . '/security-config.json';
     $config = getConfig($file);
     $key = 'pass-requirements';
     if (isset($config[$key])) {
@@ -115,7 +129,7 @@ function getPassReq()
 }
 function getPermTrigger()
 {
-    $file = __DIR__ . '/security-config.json';
+    $file = CONFIG_PATH . '/security-config.json';
     $config = getConfig($file);
     $key = 'perm-trigger';
     if (isset($config[$key])) {
@@ -135,7 +149,7 @@ function getPermTrigger()
 }
 function getAdminUsername()
 {
-    $file = __DIR__ . '/server.json';
+    $file = CONFIG_PATH . '/server.json';
     $config = getConfig($file);
     $key = 'adminUsername';
     if (isset($config[$key])) {
@@ -148,7 +162,7 @@ function getAdminUsername()
 }
 function getPostCooldown($key)
 {
-    $file = __DIR__ . '/post-cooldown.json';
+    $file = CONFIG_PATH . '/post-cooldown.json';
     $config = getConfig($file);
     if (isset($config[$key])) {
         return $config[$key];

@@ -17,7 +17,12 @@ $biography = $_SESSION['biography'];
 $birthday = $_SESSION['birthday'];
 
 // Abrufen der neuesten Posts aus der Datenbank
-$stmt = $conn->prepare('SELECT posts.*, users.username, users.profile_pic FROM posts JOIN users ON posts.user_id = users.id ORDER BY posted_at DESC LIMIT 10');
+$stmt = $conn->prepare('SELECT posts.*, users.username, users.profile_pic 
+FROM posts 
+JOIN users ON posts.user_id = users.id 
+WHERE posts.allowed = 1 
+ORDER BY posts.posted_at DESC 
+LIMIT 10;');
 $stmt->execute();
 $posts = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 $bgColor = htmlspecialchars($_SESSION['primary_color']);
@@ -51,7 +56,7 @@ if ($bgBrightness > 125) {
 <body>
     <div class="header">
         <div>
-            <h1>Willkommen bei PhotoFox, <?php echo htmlspecialchars($name); ?>!</h1>
+            <h1>Willkommen bei Photofox, <?php echo htmlspecialchars($name); ?>!</h1>
         </div>
         <div>
             <img src="<?php echo './uploads/profilePic/' . htmlspecialchars($profile_pic); ?>" alt="Profilbild">
@@ -71,7 +76,7 @@ if ($bgBrightness > 125) {
                     <?php endif; ?>
                     <div class="content-text">
                         <h2><?php echo htmlspecialchars($post['title']); ?></h2>
-                        <div class="meta">von <?php echo htmlspecialchars($post['username']); ?> am <?php echo htmlspecialchars($post['posted_at']); ?></div>
+                        <div class="meta">von <?php echo htmlspecialchars($post['username']); ?> am <?php echo htmlspecialchars(date('d.m.Y, H:i', strtotime($post['posted_at']))); ?></div>
                         <p><?php echo nl2br(htmlspecialchars($post['description'])); ?></p>
                     </div>
                 </div>

@@ -2,11 +2,12 @@
 $title = 'Admin - Posts';
 $currentPage = 'posts';
 require_once('nav.php');
+echo '<link rel="stylesheet" href="./posts.css">';
 require('../database.php');
 ?>
 
 <body>
-<?php
+    <?php
     if (!isset($_GET['act'])) {
         $_GET['act'] = "overview";
     }
@@ -15,10 +16,7 @@ require('../database.php');
     }
     if ($_GET['act'] == 'unlock') {
         echo '<h1>Freigabe</h1>';
-        $sql = "SELECT posts.* user.username
-            FROM posts
-            INNER JOIN users ON posts.user_id = users.id
-            WHERE allowed = FALSE;";
+        $sql = "SELECT posts.*, users.username FROM posts JOIN users ON posts.user_id = users.id WHERE allowed = FALSE;";
         $result = $conn->query($sql);
         echo '<table id="dataTable">';
         echo '<tr><th>Titel</th><th>Beschreibung</th><th>Nutzer</th><th>Tags</th><th>Bild/Video</th></tr>';

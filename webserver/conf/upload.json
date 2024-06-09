@@ -1,0 +1,6 @@
+{
+    "post-image": "./uploads/",
+    "post-video": "./uploads/",
+    "profile-picture": "./uploads/profilePic/",
+    "noProfilePic-pic": "noProfilePic.png"
+}
